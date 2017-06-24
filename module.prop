@@ -1,7 +1,7 @@
 id=ts-binds
 name=ts-binds
-version=2017.06.25
-versionCode=20170625
+version=2017.06.26
+versionCode=20170626
 author=TechnoSparks
 description=ts-binds basically make use of "bind" parameter of the "mount" available in your Android environment
 template=3
