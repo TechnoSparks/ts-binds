@@ -1,0 +1,99 @@
+#!/system/xbin/bash
+folderlist=/magisk/ts-binds/folderlist.sh
+function printhelp {
+    echo 'ts-binds [options][arg]'
+    echo ''
+    echo 'Available options:'
+    echo ''
+    echo 'bindall    Bind all entries provided in'
+    echo '           ts-binds-folderlist'
+    echo 'unbindall  Unbind all entries provided in'
+    echo '           ts-binds-folderlist'
+    echo 'bind <bind name>    Binds a specific entry'
+    echo '                    by its name'
+    echo 'unbind <bind name>  Unbinds a specific'
+    echo '                    entry by its name'
+}
+if [ ! $1 ]; then
+    echo "E: No action is declared@"
+    echo ''
+    printhelp
+elif [ $1 == "help" || $1 == "h"]; then
+    printhelp
+elif [ $1 == "bindall" ]; then
+    echo 'Binding all entries'
+    echo ''
+    function folderbind {
+        if [ ! "$1" ]; then
+            tslog "Bind syntax error! Bind name not given"
+            return 1
+        elif [ ! "$2" ]; then
+            tslog "Bind syntax error! Invalid SD CARD path"
+            return 1
+        elif [ ! "$3" ]; then
+            tslog "Bind syntax error! Invalid INTERNAL STORAGE path"
+            return 1
+        elif [ ! -d "$sd$2" ]; then
+            tslog "Bind aborted: Folder '$sd$2' on SD CARD doesn't exist!"
+            return 1
+        elif [ ! -d "$int$3" ]; then
+            tslog "Bind aborted: Folder '$int$3' on INTERNAL STORAGE doesn't exist!"
+            return 1
+        else
+            mount -o bind "$sd$2" "$int$3" && tslog "Bind successful: $sd$2" || tslog "Bind failed: $sd$2"
+        fi
+    }
+    source /magisk/ts-binds/service.sh
+    echo ''
+    echo 'All entries are now binded'
+elif [ $1 == "unbindall" ]; then
+    echo 'Unbinding all entries'
+    echo ''
+    function folderbind {
+        if [ ! "$1" ]; then
+            tslog "Bind syntax error! Bind name not given"
+            return 1
+        elif [ ! "$2" ]; then
+            tslog "Bind syntax error! Invalid SD CARD path"
+            return 1
+        elif [ ! "$3" ]; then
+            tslog "Bind syntax error! Invalid INTERNAL STORAGE path"
+            return 1
+        elif [ ! -d "$sd$2" ]; then
+            tslog "Bind aborted: Folder '$sd$2' on SD CARD doesn't exist!"
+            return 1
+        elif [ ! -d "$int$3" ]; then
+            tslog "Bind aborted: Folder '$int$3' on INTERNAL STORAGE doesn't exist!"
+            return 1
+        else
+            umount "$int$3" && tslog "Unmount successful: $sd$2" || tslog "Unmount failed: $sd$2"
+        fi
+    }
+    source /magisk/ts-binds/service.sh
+    echo ''
+    echo 'All entries are now unbinded'
+elif [ $1 == "bind"]; then
+    if [ ! $2 ]; then
+        echo 'E: Bind name is not provided!';
+    elif ! grep -q $2 $folderlist; then
+        echo 'E: Bind name not found in entry list.'
+        echo '   Please check again'
+    else
+        function folderbind {
+            mount -o bind "$sd$2" "$int$3" && tslog "Bind successful: $sd$2" || tslog "Bind failed: $sd$2"
+        }
+        eval $(grep -q $2 $folderlist)
+    fi
+elif [ $1 == "unbind"]; then
+    if [ ! $2 ]; then
+        echo 'E: Bind name is not provided!';
+    elif ! grep -q $2 $folderlist; then
+        echo 'E: Bind name not found in entry list.'
+        echo '   Please check again'
+    else
+        function folderbind {
+            umount "$int$3" && tslog "Unmount successful: $sd$2" || tslog "Unmount failed: $sd$2"
+        }
+        eval $(grep -q $2 $folderlist)
+    fi
+fi

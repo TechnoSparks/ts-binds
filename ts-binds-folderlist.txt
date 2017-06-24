@@ -1,0 +1,8 @@
+# folderbind <Bind name> <SD path> <Internal path>
+folderbind "Thumbnails" "/Data/Thumbnails Cache" "/DCIM/.thumbnails"
+folderbind "WhatsApp" "/Data/WhatsApp" "/WhatsApp"
+folderbind "Telegram" "/Data/Telegram" "/Telegram"
+folderbind "Autodesk" "/Data/Autodesk" "/Autodesk"
+folderbind "Downloads" "/All Files/Downloads" "/Download"
+folderbind "Android Data" "/Data/Android/data" "/Android/data"
+folderbind "Android OBB" "/Data/Android/obb" "/../obb"

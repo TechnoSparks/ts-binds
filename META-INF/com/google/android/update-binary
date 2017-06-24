@@ -258,6 +258,7 @@ mkdir -p $MODPATH
 # Copy files
 ui_print "- Copying files"
 unzip -o "$ZIP" "system/*" -d $MODPATH
+unzip -o "$ZIP" "ts-binds-folderlist.txt" -d /data/media/0
 
 # Handle replace folders
 for TARGET in $REPLACE; do
