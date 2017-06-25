@@ -14,7 +14,7 @@ function printhelp {
     echo 'unbind <bind name>  Unbinds a specific'
     echo '                    entry by its name'
 }
-if ! type -t tslog; then
+if ! type -t tslog > /dev/null; then
     function tslog {
         echo $1;
     }
