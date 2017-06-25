@@ -25,7 +25,7 @@ Won't fix, because of complicacy. Alternative module: Magic Folder Binder
 - Save the file, reboot and forget! Or if you don't want to reboot, open a terminal emulator and run `su -c tsbinds bind all`
 
 ## Terminal functions
-ts-binds also provides a few useful terminal functions that you can use to your advantage. To see available options, run `tsbinds help` in a terminal emulator
+ts-binds also provides a few useful terminal functions that you can use to your advantage. To see available options, run `tsbinds help` in a terminal emulator. Note that using `tsbinds` require an elevated shell (root).
 
 ## Links
 - [GitHub](https://github.com/TechnoSparks/ts-binds)
