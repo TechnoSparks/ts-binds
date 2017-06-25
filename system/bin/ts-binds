@@ -39,7 +39,7 @@ elif [ $1 == "bindall" ]; then
             return 1
         elif [ ! -d "$sd$2" ]; then
             tslog "Bind aborted: Folder '$sd$2' on SD CARD doesn't exist!"
-            return 1
+            return 1folderlist
         elif [ ! -d "$int$3" ]; then
             tslog "Bind aborted: Folder '$int$3' on INTERNAL STORAGE doesn't exist!"
             return 1
@@ -47,7 +47,7 @@ elif [ $1 == "bindall" ]; then
             mount -o bind "$sd$2" "$int$3" && tslog "Bind successful: $sd$2" || tslog "Bind failed: $sd$2"
         fi
     }
-    source /magisk/ts-binds/service.sh
+    source $folderlist
     echo ''
     echo 'All entries are now binded'
 elif [ $1 == "unbindall" ]; then
@@ -73,7 +73,7 @@ elif [ $1 == "unbindall" ]; then
             umount "$int$3" && tslog "Unmount successful: $sd$2" || tslog "Unmount failed: $sd$2"
         fi
     }
-    source /magisk/ts-binds/service.sh
+    source $folderlist
     echo ''
     echo 'All entries are now unbinded'
 elif [ $1 == "bind"]; then
