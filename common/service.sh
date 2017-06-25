@@ -45,7 +45,7 @@ until [ $sdstatus == "1" ]; do
 done
 
 # Execute ----------------------------------------------
-tsbinds bindall
+tsbinds bind all
 
 # End bind ---------------------------------------------
 tslog "Script execution completed"
