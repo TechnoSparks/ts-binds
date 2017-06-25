@@ -31,21 +31,35 @@ function printhelp {
     echo ""
     echo "Available options:"
     echo ""
-    echo "bind <bind name>    Binds a specific entry"
+    echo "bind <bind name> .. Binds a specific entry"
     echo "                    by its name"
-    echo "bind all            Binds all entries "
+    echo "bind all .......... Binds all entries "
     echo "unbind <bind name>  Unbinds a specific"
     echo "                    entry by its name"
-    echo "unbind all          Unbinds all entries"
-    echo "update              Update cached entries if"
+    echo "unbind all ........ Unbinds all entries"
+    echo "check <bind name> . Check if an entry is binded"
+    echo "check all ......... Check if all entries are"
+    echo "                    individually binded"
+    echo "update ............ Update cached entries if"
     echo "                    the user's entries are"
     echo "                    modified"
-    echo "update f            Update cached entries"
+    echo "update f .......... Update cached entries"
     echo "                    regardless if the user's"
     echo "                    entries are modified"
-    echo "reinit              Re-run the script that"
-    echo "                    runs on boot (may show"
-    echo "                    unmount errors)"
+    echo "move <bind name> .. Unbind and then move"
+    echo "                    specific recursing files"
+    echo "                    and folders to the"
+    echo "                    SD card path"
+    echo "move all .......... Unbind and then move"
+    echo "                    all recursing files"
+    echo "                    and folders to the"
+    echo "                    SD card path"
+    echo "reinit ............ Re-run the script that"
+    echo "                    runs on boot"
+    echo ""
+    echo "Note: running a command with \"all\" argument may return"
+    echo "      \"unmount\" errors for some functions. Most of the"
+    echo "      time they can be safely ignored."
 }
 function tslog {
     echo -e "$(date +'%F %T'):\n  $1\n" >> $logfile
@@ -58,111 +72,62 @@ if [ ! $1 ]; then
 elif [ $1 == "help" ] || [ $1 == "h" ]; then
     printhelp
 elif [ $1 == "bind" ]; then
+    function folderbind {
+        if grep -q $int$3 /proc/mounts; then
+            tslog "$1 is already binded"
+        elif [ ! -d "$sd$2" ]; then
+            tslog "Bind aborted: Folder '$sd$2' on SD CARD doesn't exist!"
+            return 1
+        elif [ ! -d "$int$3" ]; then
+            tslog "Bind aborted: Folder '$int$3' on INTERNAL STORAGE doesn't exist!"
+            return 1
+        else
+            mount -o bind "$sd$2" "$int$3" && tslog "Bind successful: $1" || tslog "Bind failed: $1"
+        fi
+    }
     if [ ! $2 ]; then
         echo 'E: Bind name is not provided!';
     elif [ $2 == "all" ]; then
-        function folderbind {
-            if [ ! "$1" ]; then
-                tslog "Bind syntax error! Bind name not given"
-                return 1
-            elif [ ! "$2" ]; then
-                tslog "Bind syntax error! Invalid SD CARD path"
-                return 1
-            elif [ ! "$3" ]; then
-                tslog "Bind syntax error! Invalid INTERNAL STORAGE path"
-                return 1
-            elif [ ! -d "$sd$2" ]; then
-                tslog "Bind aborted: Folder '$sd$2' on SD CARD doesn't exist!"
-                return 1
-            elif [ ! -d "$int$3" ]; then
-                tslog "Bind aborted: Folder '$int$3' on INTERNAL STORAGE doesn't exist!"
-                return 1
-            else
-                mount -o bind "$sd$2" "$int$3" && tslog "Bind successful: $sd$2" || tslog "Bind failed: $sd$2"
-            fi
-        }
         tslog "Binding all entries"
         source $folderlist
         tslog "All entries were processed"
-    elif ! grep -q $2 $folderlist; then
-        tslog "Unable to bind $2, entry not found in list!"
+    elif line=$(grep $2 $folderlist); then
+        eval $line
     else
-        function folderbind {
-            grep -q $int$3 /proc/mounts
-        }
-        if eval $(grep $2 $folderlist); then
-            tslog "$2 is already binded"
-        else
-            function folderbind {
-                mount -o bind "$sd$2" "$int$3" && tslog "Bind successful: $sd$2" || tslog "Bind failed: $sd$2"
-            }
-            tslog "Binding $2"
-            eval $(grep $2 $folderlist)
-        fi
+        tslog "Unable to bind $2, entry not found in list!"
     fi
 elif [ $1 == "unbind" ]; then
+    function folderbind {
+        if grep -q $int$3 /proc/mounts; then
+            tslog "$1 is already unbinded"
+        else
+            umount "$int$3" && tslog "Unbind successful: $1" || tslog "Unbind failed: $1"
+        fi
+    }
     if [ ! $2 ]; then
         echo 'E: Bind name is not provided!';
     elif [ $2 == "all" ]; then
-        function folderbind {
-            if [ ! "$1" ]; then
-                tslog "Bind syntax error! Bind name not given"
-                return 1
-            elif [ ! "$2" ]; then
-                tslog "Bind syntax error! Invalid SD CARD path"
-                return 1
-            elif [ ! "$3" ]; then
-                tslog "Bind syntax error! Invalid INTERNAL STORAGE path"
-                return 1
-            elif [ ! -d "$sd$2" ]; then
-                tslog "Bind aborted: Folder '$sd$2' on SD CARD doesn't exist!"
-                return 1
-            elif [ ! -d "$int$3" ]; then
-                tslog "Bind aborted: Folder '$int$3' on INTERNAL STORAGE doesn't exist!"
-                return 1
-            else
-                umount "$int$3" && tslog "Unbind successful: $sd$2" || tslog "Unbind failed: $sd$2"
-            fi
-        }
         tslog "Unbinding all entries"
         source $folderlist
         tslog "All entries were processed"
-    elif ! grep -q $2 $folderlist; then
-        tslog "Unable to bind $2, entry not found in list!"
+    elif line=$(grep $2 $folderlist); then
+        eval $line
     else
-        function folderbind {
-            grep -q $int$3 /proc/mounts
-        }
-        if ! eval $(grep $2 $folderlist); then
-            tslog "$2 is already unbinded"
-        else
-            function folderbind {
-                umount "$int$3" && tslog "Unbind successful: $sd$2" || tslog "Unbind failed: $sd$2"
-            }
-            tslog "Unbinding $2"
-            eval $(grep $2 $folderlist)
-        fi
+        tslog "Unable to unbind $2, entry not found in list!"
     fi
 elif [ $1 == "check" ]; then
+    function folderbind {
+        grep -q $int$3 /proc/mounts && tslog "$1 is BINDED" || tslog "$1 is NOT binded"
+    }
     if [ ! $2 ]; then
         echo 'E: Bind name is not provided!';
     elif [ $2 == "all" ]; then
-        function folderbind {
-            grep -q $int$3 /proc/mounts && tslog "$2 is BINDED" || tslog "$2 is NOT binded"
-        }
         source $folderlist
         tslog "All entries were checked"
-    elif ! grep -q $2 $folderlist; then
-        tslog "Unable to check $2, entry not found in list!"
+    elif line=$(grep $2 $folderlist); then
+        eval $line
     else
-        function folderbind {
-            grep -q $int$3 /proc/mounts
-        }
-        if eval $(grep $2 $folderlist); then
-            tslog "$2 is BINDED"
-        else
-            tslog "$2 is NOT binded"
-        fi
+        tslog "Unable to check $2, entry not found in list!"
     fi
 elif [ $1 == "update" ]; then
     if [ $2 == "f" ]; then
@@ -179,38 +144,36 @@ elif [ $1 == "update" ]; then
     fi
 elif [ $1 == "move" ]; then
     if [ ! $2 ]; then
-        echo 'E: Bind name is not provided!';
+        echo 'E: Bind name is not provided!'
     elif [ $2 == "all" ]; then
         tsbinds unbind all
         function folderbind {
-            mv -f $int$3/* $sd$2/ && tslog "Files moved successfully" || tslog "Moving operation failed"
+            if [ "$(ls -A "$int$3")" ]; then
+                mv -f "$int$3/"* "$sd$2/" && tslog "Files moved successfully for $1" || tslog "Moving operation failed for $1"
+            else
+                tslog "No files to move for $1"
+            fi
         }
         source $folderlist
-        tslog "All entries were processed"
         tsbinds bind all
-    elif ! grep -q $2 $folderlist; then
-        tslog "Unable to move contents for $2, entry not found in list!"
+    elif line=$(grep $2 $folderlist); then
+        function folderbind {
+            if grep -q "$int$3" /proc/mounts; then
+                wasBinded=yes
+                tsbinds unbind $1
+            fi
+            if [ "$(ls -A "$int$3")" ]; then
+                mv -f "$int$3/"* "$sd$2/" && tslog "Files moved successfully for $1" || tslog "Moving operation failed for $1"
+            else
+                tslog "No files to move for $1"
+            fi
+            if [ $wasBinded == "yes" ]; then
+                tsbinds bind $1
+            fi
+        }
+        eval $line;
     else
-        function folderbind {
-            grep -q $int$3 /proc/mounts
-        }
-        if eval $(grep $2 $folderlist); then
-            wasBinded=yes
-            function folderbind {
-                umount "$int$3" && tslog "Unbind successful: $sd$2" || tslog "Unbind failed: $sd$2"
-            }
-            eval $(grep $2 $folderlist)
-        fi
-        function folderbind {
-            mv -f $int$3/* $sd$2/ && tslog "Files moved successfully" || tslog "Moving operation failed"
-        }
-        eval $(grep $2 $folderlist)
-        if [ $wasBinded == "yes" ]; then
-            function folderbind {
-                mount -o bind "$sd$2" "$int$3" && tslog "Bind successful: $sd$2" || tslog "Bind failed: $sd$2"
-            }
-            eval $(grep $2 $folderlist)
-        fi
+        tslog "Unable to move contents of $2, entry not found in list!"
     fi
 elif [ $1 == "reinit" ]; then
     tsbinds unbind all
@@ -218,5 +181,5 @@ elif [ $1 == "reinit" ]; then
 else
     echo "E: Unknown action \"$1\" supplied"
 fi
-chown root:root $logfile
-chmod 0666 $logfile
+chown media_rw:media_rw $logfile
+chmod 0664 $logfile

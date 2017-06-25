@@ -49,4 +49,4 @@ tsbinds bind all
 
 # End bind ---------------------------------------------
 tslog "Script execution completed"
-unset -f tslog folderbind
+unset -f tslog
