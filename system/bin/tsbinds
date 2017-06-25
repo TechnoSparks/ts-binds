@@ -27,6 +27,7 @@ else
     chmod 0755 $sdnamecache
     chown 0:0 $sdnamecache
 fi
+sd=$sd$sdname
 function printhelp {
     echo "tsbinds [options] [arg]"
     echo ""
