@@ -27,7 +27,6 @@ else
     chmod 0755 $sdnamecache
     chown 0:0 $sdnamecache
 fi
-sd=$sd$sdname
 function printhelp {
     echo "tsbinds [options] [arg]"
     echo ""
@@ -73,16 +72,16 @@ elif [ "$1" == "help" ] || [ "$1" == "h" ]; then
     printhelp
 elif [ "$1" == "bind" ]; then
     function folderbind {
-        if grep -q "$int$3" /proc/mounts; then
+        if grep -q "$3" /proc/mounts; then
             tslog "$1 is already binded"
-        elif [ ! -d "$sd$2" ]; then
-            tslog "Bind aborted: Folder '$sd$2' on SD CARD doesn't exist!"
+        elif [ ! -d "$2" ]; then
+            tslog "Bind aborted: Folder '$2' on SD CARD doesn't exist!"
             return 1
-        elif [ ! -d "$int$3" ]; then
-            tslog "Bind aborted: Folder '$int$3' on INTERNAL STORAGE doesn't exist!"
+        elif [ ! -d "$3" ]; then
+            tslog "Bind aborted: Folder '$3' on INTERNAL STORAGE doesn't exist!"
             return 1
         else
-            mount -o bind "$sd$2" "$int$3" && tslog "Bind successful: $1" || tslog "Bind failed: $1"
+            mount -o bind "$2" "$3" && tslog "Bind successful: $1" || tslog "Bind failed: $1"
         fi
     }
     if [ ! "$2" ]; then
@@ -98,10 +97,10 @@ elif [ "$1" == "bind" ]; then
     fi
 elif [ "$1" == "unbind" ]; then
     function folderbind {
-        if ! grep -q "$int$3" /proc/mounts; then
+        if ! grep -q "$3" /proc/mounts; then
             tslog "$1 is already unbinded"
         else
-            umount "$int$3" && tslog "Unbind successful: $1" || tslog "Unbind failed: $1"
+            umount "$3" && tslog "Unbind successful: $1" || tslog "Unbind failed: $1"
         fi
     }
     if [ ! "$2" ]; then
@@ -117,7 +116,7 @@ elif [ "$1" == "unbind" ]; then
     fi
 elif [ "$1" == "check" ]; then
     function folderbind {
-        grep -q "$int$3" /proc/mounts && tslog "$1 is BINDED" || tslog "$1 is NOT binded"
+        grep -q "$3" /proc/mounts && tslog "$1 is BINDED" || tslog "$1 is NOT binded"
     }
     if [ ! "$2" ]; then
         echo 'E: Bind name is not provided!';
@@ -148,8 +147,8 @@ elif [ "$1" == "move" ]; then
     elif [ "$2" == "all" ]; then
         tsbinds unbind all
         function folderbind {
-            if [ "$(ls -A "$int$3")" ]; then
-                mv -f "$int$3/"* "$sd$2/" && tslog "Files moved successfully for $1" || tslog "Moving operation failed for $1"
+            if [ "$(ls -A "$3")" ]; then
+                mv -f "$3/"* "$2/" && tslog "Files moved successfully for $1" || tslog "Moving operation failed for $1"
             else
                 tslog "No files to move for $1"
             fi
@@ -159,12 +158,12 @@ elif [ "$1" == "move" ]; then
     elif line="$(grep "$2" $folderlist)"; then
         function folderbind {
             wasBinded=no
-            if grep -q "$int$3" /proc/mounts; then
+            if grep -q "$3" /proc/mounts; then
                 wasBinded=yes
                 tsbinds unbind $1
             fi
-            if [ "$(ls -A "$int$3")" ]; then
-                mv -f "$int$3/"* "$sd$2/" && tslog "Files moved successfully for $1" || tslog "Moving operation failed for $1"
+            if [ "$(ls -A "$3")" ]; then
+                mv -f "$3/"* "$2/" && tslog "Files moved successfully for $1" || tslog "Moving operation failed for $1"
             else
                 tslog "No files to move for $1"
             fi
