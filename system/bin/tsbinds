@@ -86,14 +86,19 @@ elif [ $1 == "bind" ]; then
         tslog "All entries were processed"
     elif ! grep -q $2 $folderlist; then
         tslog "Unable to bind $2, entry not found in list!"
-    elif grep -q $2 /proc/mounts; then
-        tslog "$2 is already binded"
     else
         function folderbind {
-            mount -o bind "$sd$2" "$int$3" && tslog "Bind successful: $sd$2" || tslog "Bind failed: $sd$2"
+            grep -q $int$3 /proc/mounts
         }
-        tslog "Binding $2"
-        eval $(grep $2 $folderlist)
+        if eval $(grep $2 $folderlist); then
+            tslog "$2 is already binded"
+        else
+            function folderbind {
+                mount -o bind "$sd$2" "$int$3" && tslog "Bind successful: $sd$2" || tslog "Bind failed: $sd$2"
+            }
+            tslog "Binding $2"
+            eval $(grep $2 $folderlist)
+        fi
     fi
 elif [ $1 == "unbind" ]; then
     if [ ! $2 ]; then
@@ -116,7 +121,7 @@ elif [ $1 == "unbind" ]; then
                 tslog "Bind aborted: Folder '$int$3' on INTERNAL STORAGE doesn't exist!"
                 return 1
             else
-                umount "$int$3" && tslog "Unmount successful: $sd$2" || tslog "Unmount failed: $sd$2"
+                umount "$int$3" && tslog "Unbind successful: $sd$2" || tslog "Unbind failed: $sd$2"
             fi
         }
         tslog "Unbinding all entries"
@@ -124,24 +129,40 @@ elif [ $1 == "unbind" ]; then
         tslog "All entries were processed"
     elif ! grep -q $2 $folderlist; then
         tslog "Unable to bind $2, entry not found in list!"
-    elif ! grep -q $2 /proc/mounts; then
-        tslog "$2 is already unbinded"
     else
         function folderbind {
-            umount "$int$3" && tslog "Unmount successful: $sd$2" || tslog "Unmount failed: $sd$2"
+            grep -q $int$3 /proc/mounts
         }
-        tslog "Unbinding $2"
-        eval $(grep $2 $folderlist)
+        if ! eval $(grep $2 $folderlist); then
+            tslog "$2 is already unbinded"
+        else
+            function folderbind {
+                umount "$int$3" && tslog "Unbind successful: $sd$2" || tslog "Unbind failed: $sd$2"
+            }
+            tslog "Unbinding $2"
+            eval $(grep $2 $folderlist)
+        fi
     fi
 elif [ $1 == "check" ]; then
     if [ ! $2 ]; then
         echo 'E: Bind name is not provided!';
+    elif [ $2 == "all" ]; then
+        function folderbind {
+            grep -q $int$3 /proc/mounts && tslog "$2 is BINDED" || tslog "$2 is NOT binded"
+        }
+        source $folderlist
+        tslog "All entries were checked"
     elif ! grep -q $2 $folderlist; then
         tslog "Unable to check $2, entry not found in list!"
-    elif grep -q $2 /proc/mounts; then
-        tslog "$2 is binded"
     else
-        tslog "$2 is NOT binded"
+        function folderbind {
+            grep -q $int$3 /proc/mounts
+        }
+        if eval $(grep $2 $folderlist); then
+            tslog "$2 is BINDED"
+        else
+            tslog "$2 is NOT binded"
+        fi
     fi
 elif [ $1 == "update" ]; then
     if [ $2 == "f" ]; then
@@ -161,26 +182,27 @@ elif [ $1 == "move" ]; then
         echo 'E: Bind name is not provided!';
     elif [ $2 == "all" ]; then
         tsbinds unbind all
-        tslog "Unbinded all entries"
         function folderbind {
-            mv -rf $int$3/* $sd$2/ && tslog "Files moved successfully" || tslog "Moving operation failed"
+            mv -f $int$3/* $sd$2/ && tslog "Files moved successfully" || tslog "Moving operation failed"
         }
         source $folderlist
         tslog "All entries were processed"
         tsbinds bind all
-        tslog "Binded all entries"
     elif ! grep -q $2 $folderlist; then
         tslog "Unable to move contents for $2, entry not found in list!"
     else
-        if grep -q $2 /proc/mounts; then
+        function folderbind {
+            grep -q $int$3 /proc/mounts
+        }
+        if eval $(grep $2 $folderlist); then
             wasBinded=yes
             function folderbind {
-                umount "$int$3" && tslog "Unmount successful: $sd$2" || tslog "Unmount failed: $sd$2"
+                umount "$int$3" && tslog "Unbind successful: $sd$2" || tslog "Unbind failed: $sd$2"
             }
             eval $(grep $2 $folderlist)
         fi
         function folderbind {
-            mv -rf $int$3/* $sd$2/ && tslog "Files moved successfully" || tslog "Moving operation failed"
+            mv -f $int$3/* $sd$2/ && tslog "Files moved successfully" || tslog "Moving operation failed"
         }
         eval $(grep $2 $folderlist)
         if [ $wasBinded == "yes" ]; then
