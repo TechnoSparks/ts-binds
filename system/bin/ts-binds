@@ -39,7 +39,7 @@ elif [ $1 == "bindall" ]; then
             return 1
         elif [ ! -d "$sd$2" ]; then
             tslog "Bind aborted: Folder '$sd$2' on SD CARD doesn't exist!"
-            return 1folderlist
+            return 1
         elif [ ! -d "$int$3" ]; then
             tslog "Bind aborted: Folder '$int$3' on INTERNAL STORAGE doesn't exist!"
             return 1
