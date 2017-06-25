@@ -14,11 +14,15 @@ function printhelp {
     echo 'unbind <bind name>  Unbinds a specific'
     echo '                    entry by its name'
 }
+if ! type -t tslog; then
+    function tslog {
+        echo $1;
+    }
 if [ ! $1 ]; then
-    echo "E: No action is declared@"
+    echo "E: No action is declared!"
     echo ''
     printhelp
-elif [ $1 == "help" || $1 == "h"]; then
+elif [ $1 == "help" ] || [ $1 == "h" ]; then
     printhelp
 elif [ $1 == "bindall" ]; then
     echo 'Binding all entries'
