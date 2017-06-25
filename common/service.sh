@@ -26,26 +26,6 @@ function tslog {
     echo -e "$(date +'%F %T'):\n  $1\n" >> $logfile
     echo -e "$1"
 }
-function folderbind {
-    if [ ! "$1" ]; then
-        tslog "Bind syntax error! Bind name not given"
-        return 1
-    elif [ ! "$2" ]; then
-        tslog "Bind syntax error! Invalid SD CARD path"
-        return 1
-    elif [ ! "$3" ]; then
-        tslog "Bind syntax error! Invalid INTERNAL STORAGE path"
-        return 1
-    elif [ ! -d "$sd$2" ]; then
-        tslog "Bind aborted: Folder '$sd$2' on SD CARD doesn't exist!"
-        return 1
-    elif [ ! -d "$int$3" ]; then
-        tslog "Bind aborted: Folder '$int$3' on INTERNAL STORAGE doesn't exist!"
-        return 1
-    else
-        mount -o bind "$sd$2" "$int$3" && tslog "Bind successful: $sd$2" || tslog "Bind failed: $sd$2"
-    fi
-}
 echo -e "Log initialised at: $(date) \n\n" > $logfile
 
 # Copy over user's bind list ---------------------------
@@ -58,7 +38,7 @@ if [ ! $folderlist -nt $folderlistuser ]; then
 fi
 
 # Barrier, do not continue until SD card is mounted ----
-if [ -f $sdnamecache ]; do
+if [ -f $sdnamecache ]; then
     sdname=$(cat $sdnamecache)
 fi
 until [ $sdstatus == "1" ]; do
@@ -85,8 +65,8 @@ until [ $sdstatus == "1" ]; do
     fi
 done
 
-# Execute -----------------------------
-. $folderlist
+# Execute ----------------------------------------------
+source $folderlist
 
 # End bind ---------------------------------------------
 chown root:root $logfile
