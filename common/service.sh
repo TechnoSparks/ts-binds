@@ -34,6 +34,8 @@ until [ $sdstatus == "1" ]; do
                    break
                fi
             done
+            chmod 0755 $sdnamecache
+            chown 0:0 $sdnamecache
         fi
     fi
     if [ $sdstatus == "1" ]; then
