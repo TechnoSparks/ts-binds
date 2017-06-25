@@ -32,31 +32,39 @@ function printhelp {
     echo ""
     echo "Available options:"
     echo ""
-    echo "bind <bind name> .. Binds a specific entry"
-    echo "                    by its name"
-    echo "bind all .......... Binds all entries "
-    echo "unbind <bind name>  Unbinds a specific"
-    echo "                    entry by its name"
-    echo "unbind all ........ Unbinds all entries"
-    echo "check <bind name> . Check if an entry is binded"
-    echo "check all ......... Check if all entries are"
-    echo "                    individually binded"
-    echo "update ............ Update cached entries if"
-    echo "                    the user's entries are"
-    echo "                    modified"
-    echo "update f .......... Update cached entries"
-    echo "                    regardless if the user's"
-    echo "                    entries are modified"
-    echo "move <bind name> .. Unbind and then move"
-    echo "                    specific recursing files"
-    echo "                    and folders to the"
-    echo "                    SD card path"
-    echo "move all .......... Unbind and then move"
-    echo "                    all recursing files"
-    echo "                    and folders to the"
-    echo "                    SD card path"
-    echo "reinit ............ Re-run the script that"
-    echo "                    runs on boot"
+    echo "help ............... Show this reference text"
+    echo "h .................. Ditto"
+    echo "bind <bind name> ... Binds a specific entry"
+    echo "                     by its name"
+    echo "bind all ........... Binds all entries "
+    echo "bind o <src> <des> . Binds <src> to <des>"
+    echo "unbind <bind name> . Unbinds a specific"
+    echo "                     entry by its name"
+    echo "unbind all ......... Unbinds all entries"
+    echo "unbind o <des> ..... Unbinds <des>"
+    echo "check <bind name> .. Check if an entry is binded"
+    echo "check all .......... Check if all entries are"
+    echo "                     individually binded"
+    echo "update ............. Update cached entries if"
+    echo "                     the user's entries are"
+    echo "                     modified"
+    echo "update f ........... Update cached entries"
+    echo "                     regardless if the user's"
+    echo "                     entries are modified"
+    echo "move <bind name> ... Unbind and then move"
+    echo "                     specific recursing files"
+    echo "                     and folders to the"
+    echo "                     SD card path"
+    echo "move all ........... Unbind and then move"
+    echo "                     all recursing files"
+    echo "                     and folders to the"
+    echo "                     SD card path"
+    echo "reinit ............. Re-run the script that"
+    echo "                     runs on boot"
+    echo "disable ............ Disables automatic "
+    echo "                     mounting on boot"
+    echo "enable ............. Enables automatic "
+    echo "                     mounting on boot"
     echo ""
     echo "Note: running the command reinit, and unbind, move with \"all\" argument may return \"unmount\" errors for some functions. Most of the time they can be safely ignored."
 }
@@ -90,6 +98,8 @@ elif [ "$1" == "bind" ]; then
         tslog "Binding all entries"
         source $folderlist
         tslog "All entries were processed"
+    elif [ "$2" == "o" ]; then
+        folderbind "o" $3 $4
     elif line="$(grep "$2" $folderlist)"; then
         eval $line
     else
@@ -109,6 +119,8 @@ elif [ "$1" == "unbind" ]; then
         tslog "Unbinding all entries"
         source $folderlist
         tslog "All entries were processed"
+    elif [ "$2" == "o" ]; then
+        folderbind "o" $3 $4
     elif line="$(grep "$2" $folderlist)"; then
         eval $line
     else
@@ -178,6 +190,12 @@ elif [ "$1" == "move" ]; then
 elif [ "$1" == "reinit" ]; then
     tsbinds unbind all
     $MODDIR/service.sh
+elif [ "$1" == "disable" ]; then
+    touch $MODDIR/disable.txt
+    tslog "ts-binds automatic bind disabled"
+elif [ "$1" == "enable" ]; then
+    rm -f $MODDIR/disable.txt
+    tslog "ts-binds automatic bind enabled"
 else
     echo "E: Unknown action \"$1\" supplied"
 fi

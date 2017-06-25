@@ -47,7 +47,11 @@ until [ $sdstatus == "1" ]; do
 done
 
 # Execute ----------------------------------------------
-tsbinds bind all
+if [ ! -f $MODDIR/disable.txt ]; then
+    tsbinds bind all
+else
+    tslog "OFF switch file (disable.txt) found. No changes are made."
+fi
 
 # End bind ---------------------------------------------
 tslog "Script execution completed"
