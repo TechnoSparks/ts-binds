@@ -66,7 +66,7 @@ until [ $sdstatus == "1" ]; do
 done
 
 # Execute ----------------------------------------------
-source $folderlist
+ts-binds bindall
 
 # End bind ---------------------------------------------
 chown root:root $logfile

@@ -18,6 +18,7 @@ if ! type -t tslog; then
     function tslog {
         echo $1;
     }
+fi
 if [ ! $1 ]; then
     echo "E: No action is declared!"
     echo ''
