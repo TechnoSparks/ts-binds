@@ -17,7 +17,7 @@ Since you can mirror two different paths altogether, the use of this module does
 ## Known issues
 1. **Cannot bind obb folders**  
 Won't fix, because of complicacy. Alternative module with support: [Magic Folder Binder](https://github.com/VR25-xda/Magic-Folder-Binder)
-2. **Doesn't work without Bash and `mount`**
+2. **Doesn't work without Bash and `mount`**  
 Won't fix, because I am for tools provided by a ROM instead. Workaround: steal the two binaries from another ROM of the same architecture.
 
 ## Requirements
