@@ -39,7 +39,7 @@ fi
 
 # Barrier, do not continue until SD card is mounted ----
 if [ -f $sdnamecache ]; then
-    sdname=$(cat $sdnamecache)
+    source $sdnamecache
 fi
 until [ $sdstatus == "1" ]; do
     if [ -f $sdnamecache ]; do
@@ -51,7 +51,7 @@ until [ $sdstatus == "1" ]; do
             sdstatus=1
             for sdname in `ls /mnt/media_rw`; do
                if echo "$sdname" | grep -Eoq '[0-9A-F]{4}-[0-9A-F]{4}'; then
-                   echo $sdname > $sdnamecache
+                   echo sdname=$sdname > $sdnamecache
                    break
                fi
             done
@@ -69,8 +69,5 @@ done
 ts-binds bindall
 
 # End bind ---------------------------------------------
-chown root:root $logfile
-chmod 0666 $logfile
-tslog "Ownership applied to log file"
 tslog "Script execution completed"
 unset -f tslog folderbind

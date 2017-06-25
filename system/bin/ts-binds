@@ -1,5 +1,11 @@
 #!/system/xbin/bash
+int=/data/media/0
+sd=/mnt/media_rw/
+sdnamecache=$MODDIR/sdname.sh
 folderlist=/magisk/ts-binds/folderlist.sh
+logfile=$int/ts-binds.log
+source $sdnamecache
+sd=$sd$sdname
 function printhelp {
     echo 'ts-binds [options][arg]'
     echo ''
@@ -14,11 +20,10 @@ function printhelp {
     echo 'unbind <bind name>  Unbinds a specific'
     echo '                    entry by its name'
 }
-if ! type -t tslog > /dev/null; then
-    function tslog {
-        echo $1;
-    }
-fi
+function tslog {
+    echo -e "$(date +'%F %T'):\n  $1\n" >> $logfile
+    echo -e "$1"
+}
 if [ ! $1 ]; then
     echo "E: No action is declared!"
     echo ''
@@ -26,8 +31,8 @@ if [ ! $1 ]; then
 elif [ $1 == "help" ] || [ $1 == "h" ]; then
     printhelp
 elif [ $1 == "bindall" ]; then
-    echo 'Binding all entries'
-    echo ''
+    tslog "Binding all entries"
+    echo ""
     function folderbind {
         if [ ! "$1" ]; then
             tslog "Bind syntax error! Bind name not given"
@@ -50,9 +55,9 @@ elif [ $1 == "bindall" ]; then
     }
     source $folderlist
     echo ''
-    echo 'All entries are now binded'
+    tslog "All entries are now binded"
 elif [ $1 == "unbindall" ]; then
-    echo 'Unbinding all entries'
+    tslog "Unbinding all entries"
     echo ''
     function folderbind {
         if [ ! "$1" ]; then
@@ -76,29 +81,33 @@ elif [ $1 == "unbindall" ]; then
     }
     source $folderlist
     echo ''
-    echo 'All entries are now unbinded'
+    tslog "All entries are now unbinded"
 elif [ $1 == "bind"]; then
     if [ ! $2 ]; then
         echo 'E: Bind name is not provided!';
     elif ! grep -q $2 $folderlist; then
-        echo 'E: Bind name not found in entry list.'
-        echo '   Please check again'
+        tslog "Unable to bind $2, entry not found in list!"
     else
         function folderbind {
             mount -o bind "$sd$2" "$int$3" && tslog "Bind successful: $sd$2" || tslog "Bind failed: $sd$2"
         }
+        tslog "Binding $2"
         eval $(grep -q $2 $folderlist)
     fi
 elif [ $1 == "unbind"]; then
     if [ ! $2 ]; then
         echo 'E: Bind name is not provided!';
     elif ! grep -q $2 $folderlist; then
-        echo 'E: Bind name not found in entry list.'
-        echo '   Please check again'
+        tslog "Unable to bind $2, entry not found in list!"
     else
         function folderbind {
             umount "$int$3" && tslog "Unmount successful: $sd$2" || tslog "Unmount failed: $sd$2"
         }
+        tslog "Unbinding $2"
         eval $(grep -q $2 $folderlist)
     fi
 fi
+
+# Retain proper ownership
+chown root:root $logfile
+chmod 0666 $logfile
