@@ -22,7 +22,7 @@ Won't fix, because I am aiming for tools provided by a ROM instead. Workaround: 
 
 ## Requirements
 1. Magisk
-2. Bash binary is required since the scripts are Bash scripts. The shebangs are pointing to /system/xbin/bash. LineageOS or derivative ROMs should be of no problem
+2. Bash binary is required since the scripts are Bash scripts. The shebangs are pointing to `/system/xbin/bash`. LineageOS or derivative ROMs should be of no problem
 3. `mount` binary available in the PATH
 
 ## How to use
