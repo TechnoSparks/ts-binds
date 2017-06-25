@@ -1,78 +1,43 @@
 ##########################################################################################
 #
-# Magisk
-# by topjohnwu
-# 
-# This is a template zip for developers
+# ts-binds
+# by TechnoSparks
 #
-##########################################################################################
-##########################################################################################
-# 
-# Instructions:
-# 
-# 1. Place your files into system folder (delete the placeholder file)
-# 2. Fill in your module's info into module.prop
-# 3. Configure the settings in this file (common/config.sh)
-# 4. For advanced features, add shell commands into the script files under common:
-#    post-fs-data.sh, service.sh
-# 5. For changing props, add your additional/modified props into common/system.prop
-# 
 ##########################################################################################
 
 ##########################################################################################
 # Defines
 ##########################################################################################
 
-# NOTE: This part has to be adjusted to fit your own needs
-
-# This will be the folder name under /magisk
-# This should also be the same as the id in your module.prop to prevent confusion
-MODID=template
-
-# Set to true if you need to enable Magic Mount
-# Most mods would like it to be enabled
+MODID=ts-binds
 AUTOMOUNT=true
-
-# Set to true if you need to load system.prop
 PROPFILE=false
-
-# Set to true if you need post-fs-data script
 POSTFSDATA=false
-
-# Set to true if you need late_start service script
-LATESTARTSERVICE=false
+LATESTARTSERVICE=true
 
 ##########################################################################################
 # Installation Message
 ##########################################################################################
 
-# Set what you want to show when installing your mod
-
 print_modname() {
-  ui_print "*******************************"
-  ui_print "     Magisk Module Template    "
-  ui_print "*******************************"
+  ui_print "================================================"
+  ui_print " ts-binds Magisk Module"
+  ui_print "================================================"
+  ui_print "Module proudly made by TechnoSparks"
+  ui_print "Powered by Magisk (@topjohnwu)"
+  ui_print " "
+}
+
+print_onFinish() {
+  ui_print " "
+  ui_print "[i] Flashing is done!"
+  ui_print "------------------------------------------------"
 }
 
 ##########################################################################################
 # Replace list
 ##########################################################################################
 
-# List all directories you want to directly replace in the system
-# By default Magisk will merge your files with the original system
-# Directories listed here however, will be directly mounted to the correspond directory in the system
-
-# You don't need to remove the example below, these values will be overwritten by your own list
-# This is an example
-REPLACE="
-/system/app/Youtube
-/system/priv-app/SystemUI
-/system/priv-app/Settings
-/system/framework
-"
-
-# Construct your own list here, it will overwrite the example
-# !DO NOT! remove this if you don't need to replace anything, leave it empty as it is now
 REPLACE="
 "
 
@@ -85,6 +50,8 @@ REPLACE="
 set_permissions() {
   # Default permissions, don't remove them
   set_perm_recursive  $MODPATH  0  0  0755  0644
+  set_perm $MODPATH/system/bin/tsbinds  0  0  0755
+  set_perm /data/media/0/ts-binds-folderlist.txt media_rw media_rw 0664
 
   # Only some special files require specific permissions
   # The default permissions should be good enough for most cases

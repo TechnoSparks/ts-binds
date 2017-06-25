@@ -1,7 +1,7 @@
-id=template
-name=Template Module
-version=v1
-versionCode=1
-author=topjohnwu
-description=A short description
+id=ts-binds
+name=ts-binds
+version=2017.06.28
+versionCode=20170628
+author=TechnoSparks
+description=ts-binds basically make use of "bind" parameter of the "mount" available in your Android environment
 template=3
