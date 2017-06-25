@@ -66,7 +66,7 @@ function printhelp {
     echo "enable ............. Enables automatic "
     echo "                     mounting on boot"
     echo ""
-    echo "Note: running the command reinit, and unbind, move with \"all\" argument may return \"unmount\" errors for some functions. Most of the time they can be safely ignored."
+    echo "Note: running the command reinit, and unbind, move with \"all\" argument may return \"unmount\" errors. Most of the time they can be safely ignored."
 }
 function tslog {
     echo -e "$(date +'%F %T'):\n  $1\n" >> $logfile
