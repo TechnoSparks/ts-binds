@@ -113,7 +113,7 @@ elif [ $1 == "unbind" ]; then
                 tslog "Bind aborted: Folder '$sd$2' on SD CARD doesn't exist!"
                 return 1
             elif [ ! -d "$int$3" ]; then
-                tslog "Bind aborted: Folder! grep -q $2 $folderlist '$int$3' on INTERNAL STORAGE doesn't exist!"
+                tslog "Bind aborted: Folder '$int$3' on INTERNAL STORAGE doesn't exist!"
                 return 1
             else
                 umount "$int$3" && tslog "Unmount successful: $sd$2" || tslog "Unmount failed: $sd$2"
