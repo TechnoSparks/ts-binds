@@ -1,8 +1,9 @@
 #!/system/xbin/bash
+MODDIR=/magisk/ts-binds
 int=/data/media/0
 sd=/mnt/media_rw/
 sdnamecache=$MODDIR/sdname.sh
-folderlist=/magisk/ts-binds/folderlist.sh
+folderlist=$MODDIR/folderlist.sh
 logfile=$int/ts-binds.log
 source $sdnamecache
 sd=$sd$sdname
@@ -30,61 +31,33 @@ if [ ! $1 ]; then
     printhelp
 elif [ $1 == "help" ] || [ $1 == "h" ]; then
     printhelp
-elif [ $1 == "bindall" ]; then
-    tslog "Binding all entries"
-    echo ""
-    function folderbind {
-        if [ ! "$1" ]; then
-            tslog "Bind syntax error! Bind name not given"
-            return 1
-        elif [ ! "$2" ]; then
-            tslog "Bind syntax error! Invalid SD CARD path"
-            return 1
-        elif [ ! "$3" ]; then
-            tslog "Bind syntax error! Invalid INTERNAL STORAGE path"
-            return 1
-        elif [ ! -d "$sd$2" ]; then
-            tslog "Bind aborted: Folder '$sd$2' on SD CARD doesn't exist!"
-            return 1
-        elif [ ! -d "$int$3" ]; then
-            tslog "Bind aborted: Folder '$int$3' on INTERNAL STORAGE doesn't exist!"
-            return 1
-        else
-            mount -o bind "$sd$2" "$int$3" && tslog "Bind successful: $sd$2" || tslog "Bind failed: $sd$2"
-        fi
-    }
-    source $folderlist
-    echo ''
-    tslog "All entries are now binded"
-elif [ $1 == "unbindall" ]; then
-    tslog "Unbinding all entries"
-    echo ''
-    function folderbind {
-        if [ ! "$1" ]; then
-            tslog "Bind syntax error! Bind name not given"
-            return 1
-        elif [ ! "$2" ]; then
-            tslog "Bind syntax error! Invalid SD CARD path"
-            return 1
-        elif [ ! "$3" ]; then
-            tslog "Bind syntax error! Invalid INTERNAL STORAGE path"
-            return 1
-        elif [ ! -d "$sd$2" ]; then
-            tslog "Bind aborted: Folder '$sd$2' on SD CARD doesn't exist!"
-            return 1
-        elif [ ! -d "$int$3" ]; then
-            tslog "Bind aborted: Folder '$int$3' on INTERNAL STORAGE doesn't exist!"
-            return 1
-        else
-            umount "$int$3" && tslog "Unmount successful: $sd$2" || tslog "Unmount failed: $sd$2"
-        fi
-    }
-    source $folderlist
-    echo ''
-    tslog "All entries are now unbinded"
 elif [ $1 == "bind"]; then
     if [ ! $2 ]; then
         echo 'E: Bind name is not provided!';
+    elif [ $2 == "all" ]
+        function folderbind {
+            if [ ! "$1" ]; then
+                tslog "Bind syntax error! Bind name not given"
+                return 1
+            elif [ ! "$2" ]; then
+                tslog "Bind syntax error! Invalid SD CARD path"
+                return 1
+            elif [ ! "$3" ]; then
+                tslog "Bind syntax error! Invalid INTERNAL STORAGE path"
+                return 1
+            elif [ ! -d "$sd$2" ]; then
+                tslog "Bind aborted: Folder '$sd$2' on SD CARD doesn't exist!"
+                return 1
+            elif [ ! -d "$int$3" ]; then
+                tslog "Bind aborted: Folder '$int$3' on INTERNAL STORAGE doesn't exist!"
+                return 1
+            else
+                mount -o bind "$sd$2" "$int$3" && tslog "Bind successful: $sd$2" || tslog "Bind failed: $sd$2"
+            fi
+        }
+        tslog "Binding all entries"
+        source $folderlist
+        tslog "All entries were processed"
     elif ! grep -q $2 $folderlist; then
         tslog "Unable to bind $2, entry not found in list!"
     else
@@ -93,10 +66,35 @@ elif [ $1 == "bind"]; then
         }
         tslog "Binding $2"
         eval $(grep -q $2 $folderlist)
+        tslog "Process completed"
     fi
 elif [ $1 == "unbind"]; then
     if [ ! $2 ]; then
         echo 'E: Bind name is not provided!';
+    elif [ $2 == "all" ]
+        function folderbind {
+            if [ ! "$1" ]; then
+                tslog "Bind syntax error! Bind name not given"
+                return 1
+            elif [ ! "$2" ]; then
+                tslog "Bind syntax error! Invalid SD CARD path"
+                return 1
+            elif [ ! "$3" ]; then
+                tslog "Bind syntax error! Invalid INTERNAL STORAGE path"
+                return 1
+            elif [ ! -d "$sd$2" ]; then
+                tslog "Bind aborted: Folder '$sd$2' on SD CARD doesn't exist!"
+                return 1
+            elif [ ! -d "$int$3" ]; then
+                tslog "Bind aborted: Folder '$int$3' on INTERNAL STORAGE doesn't exist!"
+                return 1
+            else
+                umount "$int$3" && tslog "Unmount successful: $sd$2" || tslog "Unmount failed: $sd$2"
+            fi
+        }
+        tslog "Unbinding all entries"
+        source $folderlist
+        tslog "All entries were processed"
     elif ! grep -q $2 $folderlist; then
         tslog "Unable to bind $2, entry not found in list!"
     else
@@ -105,9 +103,8 @@ elif [ $1 == "unbind"]; then
         }
         tslog "Unbinding $2"
         eval $(grep -q $2 $folderlist)
+        tslog "Process completed"
     fi
 fi
-
-# Retain proper ownership
 chown root:root $logfile
 chmod 0666 $logfile

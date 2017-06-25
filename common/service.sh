@@ -1,17 +1,4 @@
 #!/system/xbin/bash
-#
-# Script will bind two different folders from External storage to internal storage, effectively rendering them as if they are hardlinked, recreating what FolderMount does..
-#
-# Variables that you can change:
-# sd = Your sdcard name
-#
-# SYNTAX
-# folderbind "[sdcard directory]" "[internal directory]"
-#
-# Where "bind name" is just an "indicator" to tell you what is what, and the other two arguments are pretty self-explanatory..
-# [!] WARNING: Make sure to enclose the arguments with quotes!
-# [!] WARNING: All three arguments are required
-#
 
 # Functions ----------------------------------------------
 MODDIR=${0%/*}
@@ -42,14 +29,14 @@ if [ -f $sdnamecache ]; then
     source $sdnamecache
 fi
 until [ $sdstatus == "1" ]; do
-    if [ -f $sdnamecache ]; do
+    if [ -f $sdnamecache ]; then
         if grep -q $sdname /proc/mounts; then
             sdstatus=1
         fi
     else
         if grep -Eq '[0-9A-F]{4}-[0-9A-F]{4}' /proc/mounts; then
             sdstatus=1
-            for sdname in `ls /mnt/media_rw`; do
+            for sdname in $(ls /mnt/media_rw); do
                if echo "$sdname" | grep -Eoq '[0-9A-F]{4}-[0-9A-F]{4}'; then
                    echo sdname=$sdname > $sdnamecache
                    break
