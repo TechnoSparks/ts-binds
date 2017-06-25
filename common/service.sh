@@ -5,8 +5,6 @@ MODDIR=${0%/*}
 int=/data/media/0
 sd=/mnt/media_rw/
 sdnamecache=$MODDIR/sdname.sh
-folderlist=$MODDIR/folderlist.sh
-folderlistuser=$int/ts-binds-folderlist.txt
 sdstatus=0
 logfile=$int/ts-binds.log
 function tslog {
@@ -16,13 +14,7 @@ function tslog {
 echo -e "Log initialised at: $(date) \n\n" > $logfile
 
 # Copy over user's bind list ---------------------------
-if [ ! $folderlist -nt $folderlistuser ]; then
-    tslog "Difference found between cached and original user list!"
-    cp $folderlistuser $folderlist
-    chmod 0755 $folderlist
-    chown 0:0 $folderlist
-    tslog "Updated cached list"
-fi
+tsbinds update
 
 # Barrier, do not continue until SD card is mounted ----
 if [ -f $sdnamecache ]; then
@@ -53,7 +45,7 @@ until [ $sdstatus == "1" ]; do
 done
 
 # Execute ----------------------------------------------
-ts-binds bindall
+tsbinds bindall
 
 # End bind ---------------------------------------------
 tslog "Script execution completed"
