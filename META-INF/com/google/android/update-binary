@@ -259,7 +259,8 @@ mkdir -p $MODPATH
 ui_print "- Copying files"
 unzip -o "$ZIP" "system/*" -d $MODPATH
 if [ ! -f /sdcard/ts-binds-folderlist.txt ]; then
-  unzip -o "$ZIP" "ts-binds-folderlist.txt" -d /sdcard
+  unzip -o "$ZIP" "ts-binds-folderlist.txt" -d /tmp
+  mv /tmp/ts-binds-folderlist.txt /sdcard/ts-binds-folderlist.txt
 fi
 
 # Handle replace folders
