@@ -142,7 +142,11 @@ elif [ "$1" == "check" ]; then
         tslog "Unable to check $2, entry not found in list!"
     fi
 elif [ "$1" == "update" ]; then
-    if [ "$2" ] && [ "$2" == "f" ]; then
+    if [ ! -f $folderlistuser ]; then
+        cp $MODDIR/ts-binds-folderlist.txt $folderlistuser
+        chmod 0664 $folderlistuser
+        chown 1023:1023 $folderlistuser
+    elif [ "$2" ] && [ "$2" == "f" ]; then
         cp -f $folderlistuser $folderlist
         tslog "Force-updated cached list"
     elif [ ! $folderlist -nt $folderlistuser ]; then

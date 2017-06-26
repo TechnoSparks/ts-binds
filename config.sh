@@ -50,8 +50,9 @@ REPLACE="
 set_permissions() {
   # Default permissions, don't remove them
   set_perm_recursive  $MODPATH  0  0  0755  0644
+  set_perm $MODPATH/service.sh  0  0  0755
   set_perm $MODPATH/system/bin/tsbinds  0  0  0755
-  set_perm /sdcard/ts-binds-folderlist.txt  1023  1023  0664
+  set_perm $MODPATH/ts-binds-folderlist.txt  0  0  0666
 
   # Only some special files require specific permissions
   # The default permissions should be good enough for most cases
