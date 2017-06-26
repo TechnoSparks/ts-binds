@@ -146,6 +146,8 @@ elif [ "$1" == "update" ]; then
         cp $MODDIR/ts-binds-folderlist.txt $folderlistuser
         chmod 0664 $folderlistuser
         chown 1023:1023 $folderlistuser
+        tslog "Copied user list to internal storage"
+        tsbinds update
     elif [ "$2" ] && [ "$2" == "f" ]; then
         cp -f $folderlistuser $folderlist
         tslog "Force-updated cached list"
