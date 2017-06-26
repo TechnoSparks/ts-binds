@@ -1,4 +1,7 @@
 #!/system/xbin/bash
+# sy
+
+# Check if run under root --------------------------------
 if ! ls /data > /dev/null 2> /dev/null; then
     echo "[!] ERROR"
     echo "    ts-binds needs to be invoked"
@@ -8,6 +11,8 @@ if ! ls /data > /dev/null 2> /dev/null; then
     echo "Terminating.."
     exit 1
 fi
+
+# Functions ----------------------------------------------
 MODDIR=/magisk/ts-binds
 int=/data/media/0
 sd=/mnt/media_rw/
@@ -73,12 +78,18 @@ function tslog {
     echo -e "$(date +'%F %T'):\n  $1\n" >> $logfile
     echo -e "$1"
 }
+
+# No action given ----------------------------------------
 if [ ! "$1" ]; then
     echo "E: No action is declared!"
     echo ''
     printhelp
+
+# Print Help ---------------------------------------------
 elif [ "$1" == "help" ] || [ "$1" == "h" ]; then
     printhelp
+
+# Bind ---------------------------------------------------
 elif [ "$1" == "bind" ]; then
     function folderbind {
         if grep -q "$3" /proc/mounts; then
@@ -106,6 +117,8 @@ elif [ "$1" == "bind" ]; then
     else
         tslog "Unable to bind $2, entry not found in list!"
     fi
+
+# Unind ---------------------------------------------------
 elif [ "$1" == "unbind" ]; then
     function folderbind {
         if ! grep -q "$3" /proc/mounts; then
@@ -127,6 +140,8 @@ elif [ "$1" == "unbind" ]; then
     else
         tslog "Unable to unbind $2, entry not found in list!"
     fi
+
+# Check --------------------------------------------------
 elif [ "$1" == "check" ]; then
     function folderbind {
         grep -q "$3" /proc/mounts && tslog "$1 is BINDED" || tslog "$1 is NOT binded"
@@ -141,6 +156,8 @@ elif [ "$1" == "check" ]; then
     else
         tslog "Unable to check $2, entry not found in list!"
     fi
+
+# Update -------------------------------------------------
 elif [ "$1" == "update" ]; then
     if [ ! -f $folderlistuser ]; then
         cp $MODDIR/ts-binds-folderlist.txt $folderlistuser
@@ -160,6 +177,8 @@ elif [ "$1" == "update" ]; then
     else
         tslog "No update made to cached list"
     fi
+
+# Move ---------------------------------------------------
 elif [ "$1" == "move" ]; then
     if [ ! "$2" ]; then
         echo 'E: Bind name is not provided!'
@@ -194,17 +213,25 @@ elif [ "$1" == "move" ]; then
     else
         tslog "Unable to move contents of $2, entry not found in list!"
     fi
+
+# Reinit -------------------------------------------------
 elif [ "$1" == "reinit" ]; then
     tsbinds unbind all
     $MODDIR/service.sh
+
+# Enable or disable --------------------------------------
 elif [ "$1" == "disable" ]; then
     touch $MODDIR/disable.txt
     tslog "ts-binds automatic bind disabled"
 elif [ "$1" == "enable" ]; then
     rm -f $MODDIR/disable.txt
     tslog "ts-binds automatic bind enabled"
+
+# Action unrecognised ------------------------------------
 else
     echo "E: Unknown action \"$1\" supplied"
 fi
+
+# Force log proper permission
 chown 1023:1023 $logfile $folderlistuser
 chmod 0664 $logfile $folderlistuser
