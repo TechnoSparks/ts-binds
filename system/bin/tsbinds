@@ -200,5 +200,5 @@ elif [ "$1" == "enable" ]; then
 else
     echo "E: Unknown action \"$1\" supplied"
 fi
-chown media_rw:media_rw $logfile
-chmod 0664 $logfile
+chown 1023:1023 $logfile $folderlistuser
+chmod 0664 $logfile $folderlistuser
