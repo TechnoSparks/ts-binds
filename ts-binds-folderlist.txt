@@ -1,9 +1,9 @@
 #!/system/xbin/bash
+# sy
 
 #| SYNTAX:
 #|   folderbind <Bind/couple name> $sd<SD path> $int<Internal path>
 #|
-#| Example:
-#|   folderbind applicationname "$sd/Application Data/Application" $int/Application
-#|
 #| If an argument contains spaces, quotes are REQUIRED to ensure the script to run properly. All three arguments are REQUIRED
+
+# folderbind whatsapp "$sd/Application Data/WhatsApp" $int/WhatsApp
