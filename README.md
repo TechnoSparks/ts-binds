@@ -1,5 +1,5 @@
 # ts-binds
-ts-binds basically make use of "bind" parameter of the "mount" available in your Android environment
+ts-binds basically make use of “bind” parameter of the “mount” available in your Android environment
 
 ## What does it do
 Derived from a very long-living trick for users who are struggling with the internal storage space available on their phones, while at the same time has the benefit of inserting an SD card, ts-binds will make use of already available functions on your device, to mirror a path to another path, effectively making both paths indistinguishable.
