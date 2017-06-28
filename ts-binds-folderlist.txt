@@ -1,6 +1,3 @@
-#!/system/xbin/bash
-# sy
-
 #| SYNTAX:
 #|   folderbind <Bind/couple name> $sd<SD path> $int<Internal path>
 #|
