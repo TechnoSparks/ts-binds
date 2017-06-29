@@ -27,7 +27,7 @@ Won't fix, because I am aiming for tools provided by a ROM instead. Workaround: 
 
 ## How to use
 - Install module by flashing via recovery or selecting the zip in Magisk Manager.
-- Once you reboot, a new file with the name `ts-binds-folderlist.txt` will be created on your SD Card.
+- Once you reboot, a new file with the name `ts-binds-folderlist.txt` will be created in your internal storage.
 - Edit the file and add your own folder couple. Read the comments in the file for reference
 - Save the file, reboot and forget! Or if you don't want to reboot, open a terminal emulator and run `su -c tsbinds bind all`
 
