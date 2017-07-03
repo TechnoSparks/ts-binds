@@ -18,7 +18,7 @@ Since you can mirror two different paths altogether, the use of this module does
 1. **Cannot bind obb folders**  
 Won't fix, because of complicacy. Alternative module with support: [Magic Folder Binder](https://github.com/VR25-xda/Magic-Folder-Binder)
 2. **Doesn't work without Bash and `mount`**  
-Won't fix, because I am aiming for tools provided by a ROM instead. Workaround: steal the two binaries from another ROM of the same architecture.
+Won't fix, because I am aiming for tools provided by a ROM instead. Workaround: steal the two binaries from another ROM of the same architecture. [(For `bash`)](https://forum.xda-developers.com/apps/magisk/module-magisk-bash-shell-t3609988)
 
 ## Requirements
 1. Magisk
