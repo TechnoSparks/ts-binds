@@ -35,5 +35,6 @@ Won't fix, because I am aiming for tools provided by a ROM instead. Workaround: 
 ts-binds also provides a few useful terminal functions that you can use to your advantage. To see available options, run `tsbinds help` in a terminal emulator. Note that using `tsbinds` require an elevated shell (root).
 
 ## Links
+- [XDA Developers thread](https://forum.xda-developers.com/apps/magisk/module-ts-binds-t3628856)
 - [GitHub](https://github.com/TechnoSparks/ts-binds)
 - [Changelog as GitHub commits](https://github.com/TechnoSparks/ts-binds/commits/master)
