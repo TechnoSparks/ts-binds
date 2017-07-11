@@ -45,8 +45,6 @@ REPLACE="
 # Permissions
 ##########################################################################################
 
-# NOTE: This part has to be adjusted to fit your own needs
-
 set_permissions() {
   # Default permissions, don't remove them
   set_perm_recursive  $MODPATH  0  0  0755  0644
