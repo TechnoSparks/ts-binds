@@ -133,7 +133,7 @@ mkdir -p $MODPATH
 # Copy files
 ui_print "- Copying files"
 mv $INSTALLER/system $MODPATH/system
-mv ts-binds-folderlist.txt $MODPATH/
+mv $INSTALLER/ts-binds-folderlist.txt $MODPATH/
 
 # Handle replace folders
 for TARGET in $REPLACE; do
