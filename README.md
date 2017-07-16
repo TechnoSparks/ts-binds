@@ -19,6 +19,7 @@ Since you can mirror two different paths altogether, the use of this module does
 - Once you reboot, a new file with the name `ts-binds-folderlist.txt` will be created in your internal storage.
 - Edit the file and add your own folder couple. Read the comments in the file for reference
 - Save the file, reboot and forget! Or if you don't want to reboot, open a terminal emulator and run `su -c tsbinds bind all`
+- Any changes that you wish to make in the future can be done by editing the file again, and re-run `tsbinds bind all`. As easy as that.
 
 ## Known issues
 1. **Cannot bind obb folders**  
