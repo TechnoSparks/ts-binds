@@ -16,22 +16,10 @@ fi
 MODDIR=/magisk/ts-binds
 int=/data/media/0
 sd=/mnt/media_rw/
-sdnamecache=$MODDIR/sdname.sh
 folderlist=$MODDIR/cached-folderlist.sh
 folderlistuser=$int/ts-binds-folderlist.txt
 logfile=$int/ts-binds.log
-if [ -f $sdnamecache ]; then
-    source $sdnamecache
-else
-    for sdname in $(ls /mnt/media_rw); do
-       if echo "$sdname" | grep -Eoq '[0-9A-F]{4}-[0-9A-F]{4}'; then
-           echo sdname=$sdname > $sdnamecache
-           break
-       fi
-    done
-    chmod 0755 $sdnamecache
-    chown 0:0 $sdnamecache
-fi
+sdname=$(grep -m 1 -Eo "[0-9A-F]{4}-[0-9A-F]{4}" /proc/mounts)
 sd=$sd$sdname
 function printhelp {
     echo "tsbinds [options] [arg]"
@@ -60,11 +48,13 @@ function printhelp {
     echo "move <bind name> ... Unbind and then move"
     echo "                     specific recursing files"
     echo "                     and folders to the"
-    echo "                     SD card path"
+    echo "                     SD card path. Files"
+    echo "                     will be overwritten!"
     echo "move all ........... Unbind and then move"
     echo "                     all recursing files"
     echo "                     and folders to the"
-    echo "                     SD card path"
+    echo "                     SD card path. Files"
+    echo "                     will be overwritten!"
     echo "reinit ............. Re-run the script that"
     echo "                     runs on boot"
     echo "disable ............ Disables automatic "
