@@ -14,22 +14,29 @@ Since you can mirror two different paths altogether, the use of this module does
 2. Robust functions available for use in Terminal
 3. Bind or unbind specific “folder couple” that you named
 
+## How to use
+- Install module by flashing via recovery or selecting the zip in Magisk Manager.
+- Once you reboot, a new file with the name `ts-binds-folderlist.txt` will be created in your internal storage.
+- Edit the file and add your own folder couple. Read the comments in the file for reference
+- Save the file, reboot and forget! Or if you don't want to reboot, open a terminal emulator and run `su -c tsbinds bind all`
+
 ## Known issues
 1. **Cannot bind obb folders**  
-Won't fix, because of complicacy. Alternative module with support: [Magic Folder Binder](https://github.com/VR25-xda/Magic-Folder-Binder)
-2. **Doesn't work without Bash and `mount`**  
+You may be doing it wrong. OBB's real path is not `/data/media/0/Android/obb` but instead `/data/media/obb`. From here you can add a line couple similar as of this:  
+```
+folderbind rektOps /data/media/obb/com.rektops $sd/Android/obb/com.rektOps
+# or even this if you're advanced:
+folderbind aGame $int/../obb/net.agame $sd/Android/obb/net.agame
+```
+2. **Issue with sdcardfs**  
+I may not able to fix this until someone with a sdcardfs capable kernel is willing to assist me
+3. **Doesn't work without Bash and `mount`**  
 Won't fix, because I am aiming for tools provided by a ROM instead. Workaround: steal the two binaries from another ROM of the same architecture. [(For `bash`)](https://forum.xda-developers.com/apps/magisk/module-magisk-bash-shell-t3609988)
 
 ## Requirements
 1. Magisk
 2. Bash binary is required since the scripts are Bash scripts. The shebangs are pointing to `/system/xbin/bash`. LineageOS or derivative ROMs should be of no problem
 3. `mount` binary available in the PATH
-
-## How to use
-- Install module by flashing via recovery or selecting the zip in Magisk Manager.
-- Once you reboot, a new file with the name `ts-binds-folderlist.txt` will be created in your internal storage.
-- Edit the file and add your own folder couple. Read the comments in the file for reference
-- Save the file, reboot and forget! Or if you don't want to reboot, open a terminal emulator and run `su -c tsbinds bind all`
 
 ## Terminal functions
 ts-binds also provides a few useful terminal functions that you can use to your advantage. To see available options, run `tsbinds help` in a terminal emulator. Note that using `tsbinds` require an elevated shell (root).
