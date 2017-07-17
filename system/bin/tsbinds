@@ -211,7 +211,6 @@ elif [ "$1" == "move" ]; then
 
 # Reinit -------------------------------------------------
 elif [ "$1" == "reinit" ]; then
-    tsbinds unbind all
     $MODDIR/service.sh
 
 # Enable or disable --------------------------------------
