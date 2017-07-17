@@ -4,7 +4,7 @@
 # Functions ----------------------------------------------
 MODDIR=${0%/*}
 sdstatus=0
-logfile=$int/ts-binds.log
+logfile=/data/media/0/ts-binds.log
 function tslog {
     echo -e "$(date +'%F %T'):\n  $1\n" >> $logfile
     echo -e "$1"
