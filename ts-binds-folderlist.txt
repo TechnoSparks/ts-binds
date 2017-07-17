@@ -3,6 +3,6 @@
 #|
 #| If an argument contains spaces, quotes are REQUIRED to ensure the script to run properly. All three arguments are REQUIRED
 #|
-#| The hash symbol (hashtag) is a comment character - everything after it will not be processed by the shell. The hash symbol at the start of a line will prevent the folder couple from being processed by ts-binds.
+#| The hash symbol (hashtag) is a comment character - everything after it will not be processed by the shell. The hash symbol at the start of a line will prevent the folder couple from being processed by ts-binds. The example below won't be processed by the shell until you remove the hash symbol.
 
 # folderbind whatsapp "$sd/Application Data/WhatsApp" $int/WhatsApp
