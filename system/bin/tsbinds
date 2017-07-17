@@ -84,11 +84,11 @@ elif [ "$1" == "bind" ]; then
     function folderbind {
         if grep -q "$3" /proc/mounts; then
             tslog "$1 is already binded"
-        elif [ ! -d "$2" ]; then
-            tslog "Bind aborted: Folder '$2' on SD CARD doesn't exist!"
+        elif [ ! -d "$2" ] && [ ! -f "$2" ]; then
+            tslog "Bind aborted: Folder '$2' as source doesn't exist!"
             return 1
-        elif [ ! -d "$3" ]; then
-            tslog "Bind aborted: Folder '$3' on INTERNAL STORAGE doesn't exist!"
+        elif [ ! -d "$3" ] && [ ! -f "$3" ]; then
+            tslog "Bind aborted: Folder '$3' as target doesn't exist!"
             return 1
         else
             mount -o bind "$2" "$3" && tslog "Bind successful: $1" || tslog "Bind failed: $1"
