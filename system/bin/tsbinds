@@ -19,7 +19,7 @@ sd=/mnt/media_rw/
 folderlist=$MODDIR/cached-folderlist.sh
 folderlistuser=$int/ts-binds-folderlist.txt
 logfile=$int/ts-binds.log
-sdname=$(grep -m 1 -Eo "[0-9A-F]{4}-[0-9A-F]{4}" /proc/mounts)
+sdname=$($(grep -m 1 "/mnt/media_rw/" /proc/mounts) | grep -m 1 -Eo "[0-9A-Z]{4}-[0-9A-Z]{4}")
 sd=$sd$sdname
 function printhelp {
     echo "tsbinds [options] [arg]"
