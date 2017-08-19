@@ -32,4 +32,4 @@ ts-binds also provides a few useful terminal functions that you can use to your 
 - [→ DOWNLOAD](https://github.com/TechnoSparks/ts-binds/releases)
 - [XDA Developers thread](https://forum.xda-developers.com/apps/magisk/module-ts-binds-t3628856)
 - [GitHub](https://github.com/TechnoSparks/ts-binds)
-- [Changelogs](https://github.com/TechnoSparks/ts-binds/releases)
+- [Changelogs](https://github.com/Magisk-Modules-Repo/ts-binds/releases)
