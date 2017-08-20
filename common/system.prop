@@ -1,3 +1,2 @@
-# This file will be read by resetprop
-# Example: Change dpi
-# ro.sf.lcd_density=320
+# Disable sdcardfs by prop
+persist.sys.sdcardfs=force_off

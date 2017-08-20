@@ -5,16 +5,20 @@ ts-binds binds two different folders on your device so that both folders share t
 ### 1.0.5
 **Additions**  
 - Print out log contents when `tsbinds log` is executed in terminal
+
 **Modifications**  
 - Get sdcard's name more reliably
 - Changed the description of the module
 - Modified README to reflect the new place of the repository
+
 ### 1.0.4
 **Additions**  
 - Added support to bind two different files!
 - folderlist now has a link to an in-depth tutorial
+
 **Fixes**  
 - Invalid path to log file in service.sh
+
 **Modifications**  
 - SD card name will not be cached anymore
 - Simpler `grep`ing of SD card name
