@@ -2,6 +2,10 @@
 ts-binds binds two different folders on your device so that both folders share the same contents
 
 ## Changelog (2 recent versions)
+### 1.0.6
+**Additions**  
+- Disable sdcardfs from build.prop
+
 ### 1.0.5
 **Additions**  
 - Print out log contents when `tsbinds log` is executed in terminal
