@@ -34,6 +34,9 @@ Derived from a very long-living trick for users who are struggling with the inte
 
 For example, if you mirror the `Download` folder on Internal with the `Stuff from Internet` folder on your SD Card, the same list of cat pictures will be shown on both directories when navigated via a file manager, and any changes will take affect on both paths.
 
+## Notice
+Using this module will disable sdcardfs.
+
 ## Features
 1. Automated mount on boot based on user-configured path-list in internal storage
 2. Robust functions available for use in Terminal
@@ -53,7 +56,7 @@ Bash support is required since the scripts are Bash scripts. The shebangs are po
 ts-binds also provides a few useful terminal functions that you can use to your advantage. To see available options, run `tsbinds help` in a terminal emulator. Note that using `tsbinds` require an elevated shell (root).
 
 ## Links
-- [→ DOWNLOAD](https://github.com/Magisk-Modules-Repo/ts-binds/releases)
+- [→ DOWNLOAD ZIP](https://github.com/Magisk-Modules-Repo/ts-binds/releases) (Also available in Magisk Repo)
 - [XDA Developers thread](https://forum.xda-developers.com/apps/magisk/module-ts-binds-t3628856)
 - [GitHub](https://github.com/Magisk-Modules-Repo/ts-binds/)
 - [Changelogs](https://github.com/Magisk-Modules-Repo/ts-binds/releases)
