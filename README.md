@@ -7,7 +7,10 @@ Derived from a very long-living trick for users who are struggling with the inte
 For example, if you mirror the `Download` folder on Internal with the `Stuff from Internet` folder on your SD Card, the same list of cat pictures will be shown on both directories when navigated via a file manager, and any changes will take effect on both paths.
 
 ## Notice
-Using this module will disable sdcardfs.
+- Using this module will disable sdcardfs
+- Not compatible with Huawei stock ROMs
+- **Currently** not compatible when device has no SD Card slot
+- **Currently** not compatible when adoptable storage is used
 
 ## Links
 - [**More Info and Further Reading**](https://www.technosparks.net/pages/product-documentation/ts-binds)
@@ -17,23 +20,15 @@ Using this module will disable sdcardfs.
 - [Changelogs](https://github.com/Magisk-Modules-Repo/ts-binds/releases)
 
 ## Changelog (2 recent versions)
+### 1.0.7
+**Additions**
+- Magisk v14 compliant
+
+**Regressions**
+- Not backward compatible with previous Magisk versions
 ### 1.0.6
 **Additions**  
 - Disable sdcardfs by using prop entries
-
-### 1.0.5
-**Additions**  
-- Print out log contents when `tsbinds log` is executed in terminal
-
-**Modifications**  
-- Get sdcard's name more reliably
-- Changed the description of the module
-- Modified README to reflect the new place of the repository
-
-### 1.0.4
-**Additions**  
-- Added support to bind two different files!
-- folderlist now has a link to an in-depth tutorial
 
 **Fixes**  
 - Invalid path to log file in service.sh

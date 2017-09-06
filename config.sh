@@ -9,7 +9,6 @@
 # Defines
 ##########################################################################################
 
-MODID=ts-binds
 AUTOMOUNT=true
 PROPFILE=true
 POSTFSDATA=false
