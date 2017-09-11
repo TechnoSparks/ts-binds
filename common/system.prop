@@ -1,2 +1,3 @@
 # Disable sdcardfs by prop
 persist.sys.sdcardfs=force_off
+ro.sys.sdcardfs=false

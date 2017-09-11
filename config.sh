@@ -11,7 +11,7 @@
 
 MODID=ts-binds
 AUTOMOUNT=true
-PROPFILE=false
+PROPFILE=true
 POSTFSDATA=false
 LATESTARTSERVICE=true
 
