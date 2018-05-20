@@ -22,8 +22,17 @@ For example, if you mirror the `Download` folder on Internal with the `Stuff fro
 
 ## Changelog (2 recent versions)
 ### 1.0.9
+**Modifications**
+- Change to use busybox
+  - Uses hardcoded PATH towards the busybox folder `/sbin/.core/busybox`
+- Uses hardcoded path towards module directory `/sbin/.core/img/ts-binds`
+  - Was `/magisk/ts-binds` but /magisk is a softlink towards above path
+  - I know, hardcoding paths is a bad practice, but the module goes forward by Magisk's new version. The reason I had to do this is because there is no other easy alternative to find module dir other than extreme measures of loopdevice check or looping through countless number of directories from root.
+
+
+**Regressions**
 - Deprecated (not really) `tsbinds unbind <foldercouple>` command because changes in the kernel is not synchronised by the system
-  - Some research has also been done in order to determine the through cause.
+  - Research is in progress to determine the through cause.
 
 ### 1.0.8
 
