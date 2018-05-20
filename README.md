@@ -8,9 +8,11 @@ For example, if you mirror the `Download` folder on Internal with the `Stuff fro
 
 ## Notice
 - Using this module will disable sdcardfs
-- Not compatible with Huawei stock ROMs
-- **Currently** not compatible when device has no SD Card slot
-- **Currently** not compatible when adoptable storage is used
+- Not compatible with Huawei stock ROMs (Please report if now works on 1.0.8)
+- Not compatible when device has no SD Card slot
+  - Read below
+- Not compatible when adoptable storage is used
+  - Hey there! This is because the module expect to have an SD Card mounted. As for the moment you may use the module without an SD Card by editing /magisk/ts-binds/service.sh. Go to line 17 and read the comment. I will consider a suitable way to workaround this logic in the script.
 
 ## Links
 - [**More Info and Further Reading**](https://www.technosparks.net/pages/product-documentation/ts-binds)
