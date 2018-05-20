@@ -28,7 +28,7 @@ For example, if you mirror the `Download` folder on Internal with the `Stuff fro
 - Not backwards-compatible for Magisk version <15 due to template change
 
 **Fixes**
-- No longer relies on shebang /bin/xbin/bash. In fact, it was stupid for me to do this back then :S
+- No longer relies on shebang /system/xbin/bash. In fact, it was stupid for me to do this back then :S
   - This will ensure greater support to different devices especially on stock ROM
 
 **Modifications**
