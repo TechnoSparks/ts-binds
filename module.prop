@@ -1,7 +1,7 @@
 id=ts-binds
 name=ts-binds
-version=1.0.7
-versionCode=11
+version=1.0.8
+versionCode=12
 author=TechnoSparks
 description=ts-binds binds two different folders on your device so that both folders share the same contents
-template=1400
+minMagisk=1500

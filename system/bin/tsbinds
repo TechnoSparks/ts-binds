@@ -1,4 +1,4 @@
-#!/system/xbin/bash
+#!/system/bin/sh
 # sy
 
 # Check if run under root --------------------------------
@@ -7,7 +7,7 @@ if ! ls /data > /dev/null 2> /dev/null; then
     echo "    ts-binds needs to be invoked"
     echo "    from an elevated shell."
     echo "    Please run 'su' first."
-    echo ""
+    echo
     echo "Terminating.."
     exit 1
 fi
@@ -21,19 +21,14 @@ folderlistuser=$int/ts-binds-folderlist.txt
 logfile=$int/ts-binds.log
 function printhelp {
     echo "tsbinds [options] [arg]"
-    echo ""
+    echo 
     echo "Available options:"
-    echo ""
+    echo 
     echo "help ............... Show this reference text"
     echo "h .................. Ditto"
     echo "bind <bind name> ... Binds a specific entry"
     echo "                     by its name"
     echo "bind all ........... Binds all entries "
-    echo "bind o <src> <des> . Binds <src> to <des>"
-    echo "unbind <bind name> . Unbinds a specific"
-    echo "                     entry by its name"
-    echo "unbind all ......... Unbinds all entries"
-    echo "unbind o <des> ..... Unbinds <des>"
     echo "check <bind name> .. Check if an entry is binded"
     echo "check all .......... Check if all entries are"
     echo "                     individually binded"
@@ -60,7 +55,19 @@ function printhelp {
     echo "enable ............. Enables automatic "
     echo "                     mounting on boot"
     echo "log ................ Prints out the log"
-    echo ""
+    echo 
+    echo "Available but useless, kept because for"
+    echo "developmental tests:"
+    echo
+    echo "bind o <src> <des> . Binds <src> to <des>"
+    echo "unbind <bind name> . Unbinds a specific"
+    echo "                     entry by its name"
+    echo "unbind all ......... Unbinds all entries"
+    echo "unbind o <des> ..... Unbinds <des>"
+    echo
+    echo "I am experimenting on a disable per"
+    echo "folder couple feature"
+    echo 
     echo "Note: running the command reinit, and unbind, move with \"all\" argument may return \"unmount\" errors. Most of the time they can be safely ignored."
 }
 function tslog {
@@ -224,7 +231,7 @@ elif [ "$1" == "enable" ]; then
 # Print log ----------------------------------------------
 elif [ "$1" == "log" ]; then
     cat $logfile
-    echo ""
+    echo
 
 # Action unrecognised ------------------------------------
 else
