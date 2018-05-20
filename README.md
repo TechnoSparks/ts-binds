@@ -20,20 +20,27 @@ For example, if you mirror the `Download` folder on Internal with the `Stuff fro
 - [Changelogs](https://github.com/Magisk-Modules-Repo/ts-binds/releases)
 
 ## Changelog (2 recent versions)
-### 1.0.7
-**Additions**
-- Magisk v14 compliant
+### 1.0.8
 
 **Regressions**
-- Not backward compatible with previous Magisk versions
-### 1.0.6
-**Additions**  
+- Not backwards-compatible for Magisk version <15 due to template change
+
+**Fixes**
+- No longer relies on shebang /bin/xbin/bash. In fact, it was stupid for me to do this back then :S
+  - This will ensure greater support to different devices especially on stock ROM
+
+**Modifications**
+- Updated help snippet
+
+### 1.0.6 & 1.0.7
+**Additions**
 - Disable sdcardfs by using prop entries
 
 **Fixes**  
 - Invalid path to log file in service.sh
 
 **Modifications**  
+- Magisk v14 compliant
 - SD card name will not be cached anymore
 - Simpler `grep`ing of SD card name
 - File overwrite warning is added to `tsbinds help` for the `tsbinds move` feature
