@@ -1,5 +1,8 @@
-#!/system/bin/sh
+#!/sbin/.core/busybox/sh
 # sy
+
+busybox=/sbin/.core/busybox
+PATH=$busybox:$PATH
 
 # Check if run under root --------------------------------
 if ! ls /data > /dev/null 2> /dev/null; then
@@ -13,7 +16,7 @@ if ! ls /data > /dev/null 2> /dev/null; then
 fi
 
 # Functions ----------------------------------------------
-MODDIR=/magisk/ts-binds
+MODDIR=/sbin/.core/img/ts-binds
 int=/data/media/0
 sd=$(grep -m 1 -Eo "/mnt/media_rw/[0-9A-Z]{4}-[0-9A-Z]{4}" /proc/mounts)
 folderlist=$MODDIR/cached-folderlist.sh
@@ -56,17 +59,17 @@ function printhelp {
     echo "                     mounting on boot"
     echo "log ................ Prints out the log"
     echo 
-    echo "Available but useless, kept because for"
-    echo "developmental tests:"
+    echo "As of 1.0.8, unbind features are proven"
+    echo "useless because the changes in the"
+    echo "kernel is not synchronised with the ROM"
+    echo "Below are the such features, kept"
+    echo "in the script for posterity"
     echo
     echo "bind o <src> <des> . Binds <src> to <des>"
     echo "unbind <bind name> . Unbinds a specific"
     echo "                     entry by its name"
     echo "unbind all ......... Unbinds all entries"
     echo "unbind o <des> ..... Unbinds <des>"
-    echo
-    echo "I am experimenting on a disable per"
-    echo "folder couple feature"
     echo 
     echo "Note: running the command reinit, and unbind, move with \"all\" argument may return \"unmount\" errors. Most of the time they can be safely ignored."
 }
