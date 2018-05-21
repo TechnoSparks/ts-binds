@@ -28,6 +28,7 @@ function printhelp {
     echo "h .................. Ditto"
     echo "bind <bind name> ... Binds a specific entry"
     echo "                     by its name"
+    echo "bind o <src> <des> . Binds <src> to <des>"
     echo "bind all ........... Binds all entries "
     echo "check <bind name> .. Check if an entry is binded"
     echo "check all .......... Check if all entries are"
@@ -59,7 +60,6 @@ function printhelp {
     echo "Available but useless, kept because for"
     echo "developmental tests:"
     echo
-    echo "bind o <src> <des> . Binds <src> to <des>"
     echo "unbind <bind name> . Unbinds a specific"
     echo "                     entry by its name"
     echo "unbind all ......... Unbinds all entries"
