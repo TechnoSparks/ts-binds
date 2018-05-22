@@ -32,6 +32,7 @@ function printhelp {
     echo "bind <bind name> ... Binds a specific entry"
     echo "                     by its name"
     echo "bind all ........... Binds all entries "
+    echo "bind o <src> <des> . Binds <src> to <des>"
     echo "check <bind name> .. Check if an entry is binded"
     echo "check all .......... Check if all entries are"
     echo "                     individually binded"
@@ -63,9 +64,8 @@ function printhelp {
     echo "useless because the changes in the"
     echo "kernel is not synchronised with the ROM"
     echo "Below are the such features, kept"
-    echo "in the script for posterity"
+    echo "in the script for rare use cases"
     echo
-    echo "bind o <src> <des> . Binds <src> to <des>"
     echo "unbind <bind name> . Unbinds a specific"
     echo "                     entry by its name"
     echo "unbind all ......... Unbinds all entries"

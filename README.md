@@ -27,7 +27,7 @@ For example, if you mirror the `Download` folder on Internal with the `Stuff fro
   - Uses hardcoded PATH towards the busybox folder `/sbin/.core/busybox`
 - Uses hardcoded path towards module directory `/sbin/.core/img/ts-binds`
   - Was `/magisk/ts-binds` but /magisk is a softlink towards above path
-  - I know, hardcoding paths is a bad practice, but the module goes forward by Magisk's new version. The reason I had to do this is because there is no other easy alternative to find module dir other than extreme measures of loopdevice check or looping through countless number of directories from root.
+  - I know, hardcoding paths is not recommended by the Magisk documentation, but the module goes forward by Magisk's new version. The reason I had to do this is because there is no other easy alternative to find module dir other than extreme measures of loopdevice check or looping through countless number of directories from root. So instead of taxing the shell during boot, I prefer not to do that instead.
 
 
 **Regressions**
