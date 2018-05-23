@@ -42,16 +42,6 @@ function printhelp {
     echo "update f ........... Update cached entries"
     echo "                     regardless if the user's"
     echo "                     entries are modified"
-    echo "move <bind name> ... Unbind and then move"
-    echo "                     specific recursing files"
-    echo "                     and folders to the"
-    echo "                     SD card path. Files"
-    echo "                     will be overwritten!"
-    echo "move all ........... Unbind and then move"
-    echo "                     all recursing files"
-    echo "                     and folders to the"
-    echo "                     SD card path. Files"
-    echo "                     will be overwritten!"
     echo "reinit ............. Re-run the script that"
     echo "                     runs on boot"
     echo "disable ............ Disables automatic "
@@ -180,42 +170,6 @@ elif [ "$1" == "update" ]; then
         tslog "Updated cached list"
     else
         tslog "No update made to cached list"
-    fi
-
-# Move ---------------------------------------------------
-elif [ "$1" == "move" ]; then
-    if [ ! "$2" ]; then
-        echo 'E: Bind name is not provided!'
-    elif [ "$2" == "all" ]; then
-        tsbinds unbind all
-        function folderbind {
-            if [ "$(ls -A "$3")" ]; then
-                mv -f "$3/"* "$2/" && tslog "Files moved successfully for $1" || tslog "Moving operation failed for $1"
-            else
-                tslog "No files to move for $1"
-            fi
-        }
-        source $folderlist
-        tsbinds bind all
-    elif line="$(grep "$2" $folderlist)"; then
-        function folderbind {
-            wasBinded=no
-            if grep -q "$3" /proc/mounts; then
-                wasBinded=yes
-                tsbinds unbind $1
-            fi
-            if [ "$(ls -A "$3")" ]; then
-                mv -f "$3/"* "$2/" && tslog "Files moved successfully for $1" || tslog "Moving operation failed for $1"
-            else
-                tslog "No files to move for $1"
-            fi
-            if [ $wasBinded == "yes" ]; then
-                tsbinds bind $1
-            fi
-        }
-        eval $line;
-    else
-        tslog "Unable to move contents of $2, entry not found in list!"
     fi
 
 # Reinit -------------------------------------------------
