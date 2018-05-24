@@ -90,7 +90,7 @@ elif [ "$1" == "bind" ]; then
             tslog "Bind aborted: Folder '$3' as target doesn't exist!"
             return 1
         else
-            mount -o bind "$2" "$3" && tslog "Bind successful: $1" || tslog "Bind failed: $1"
+            mount --rbind "$2" "$3" && tslog "Bind successful: $1" || tslog "Bind failed: $1"
         fi
     }
     if [ ! "$2" ]; then
