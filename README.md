@@ -9,9 +9,8 @@ For example, if you mirror the `Download` folder on Internal with the `Stuff fro
 ## Notice
 - Using this module will disable sdcardfs
 - Not compatible when device has no SD Card slot
-  - Read below
+  - This is because the module expect to have an SD Card mounted. As for the moment you may use the module without an SD Card by editing /magisk/ts-binds/service.sh. Go to line 17 and read the comment. I will consider a suitable way to workaround this logic in the script.
 - Not compatible when adoptable storage is used
-  - Hey there! This is because the module expect to have an SD Card mounted. As for the moment you may use the module without an SD Card by editing /magisk/ts-binds/service.sh. Go to line 17 and read the comment. I will consider a suitable way to workaround this logic in the script.
 
 ## Links
 - [**More Info and Further Reading**](https://www.technosparks.net/pages/product-documentation/ts-binds?from=readme)
@@ -26,7 +25,7 @@ For example, if you mirror the `Download` folder on Internal with the `Stuff fro
 - Change to use busybox
   - Uses hardcoded PATH towards the busybox folder `/sbin/.core/busybox`
 - Uses hardcoded path towards module directory `/sbin/.core/img/ts-binds`
-  - Was `/magisk/ts-binds` but /magisk is a softlink towards above path
+  - Was `/magisk/ts-binds` but /magisk is a symbolic link towards above path
   - I know, hardcoding paths is not recommended by the Magisk documentation, but the module goes forward by Magisk's new version. The reason I had to do this is because there is no other easy alternative to find module dir other than extreme measures of loopdevice check or looping through countless number of directories from root. So instead of taxing the shell during boot, I prefer not to do that instead.
 
 

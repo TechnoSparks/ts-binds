@@ -109,6 +109,7 @@ elif [ "$1" == "bind" ]; then
 
 # Unbind -------------------------------------------------
 elif [ "$1" == "unbind" ]; then
+    unbindNotice="NOTICE: Kernel reports that mountpoint is unmounted but the OS may still treat them as if they are still binded. Reboot for full changes!"
     function folderbind {
         if ! grep -q "$3" /proc/mounts; then
             tslog "$1 is already unbinded"
@@ -122,10 +123,13 @@ elif [ "$1" == "unbind" ]; then
         tslog "Unbinding all entries"
         source $folderlist
         tslog "All entries were processed"
+        echo $unbindNotice
     elif [ "$2" == "o" ]; then
         folderbind "o" $3 $4
+        echo $unbindNotice
     elif line="$(grep "$2" $folderlist)"; then
         eval $line
+        echo $unbindNotice
     else
         tslog "Unable to unbind $2, entry not found in list!"
     fi
