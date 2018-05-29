@@ -33,6 +33,10 @@ function printhelp {
     echo "                     by its name"
     echo "bind all ........... Binds all entries "
     echo "bind o <src> <des> . Binds <src> to <des>"
+    echo "unbind <bind name> . Unbinds a specific"
+    echo "                     entry by its name"
+    echo "unbind all ......... Unbinds all entries"
+    echo "unbind o <des> ..... Unbinds <des>"
     echo "check <bind name> .. Check if an entry is binded"
     echo "check all .......... Check if all entries are"
     echo "                     individually binded"
@@ -49,17 +53,8 @@ function printhelp {
     echo "enable ............. Enables automatic "
     echo "                     mounting on boot"
     echo "log ................ Prints out the log"
-    echo 
-    echo "As of 1.0.8, unbind features are proven"
-    echo "useless because the changes in the"
-    echo "kernel is not synchronised with the ROM"
-    echo "Below are the such features, kept"
-    echo "in the script for rare use cases"
     echo
-    echo "unbind <bind name> . Unbinds a specific"
-    echo "                     entry by its name"
-    echo "unbind all ......... Unbinds all entries"
-    echo "unbind o <des> ..... Unbinds <des>"
+    
     echo 
     echo "Note: running the command reinit, and unbind, move with \"all\" argument may return \"unmount\" errors. Most of the time they can be safely ignored."
 }
