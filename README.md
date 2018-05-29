@@ -7,7 +7,7 @@ Derived from a very long-living trick for users who are struggling with the inte
 For example, if you mirror the `Download` folder on Internal with the `Stuff from Internet` folder on your SD Card, the same list of cat pictures will be shown on both directories when navigated via a file manager, and any changes will take effect on both paths.
 
 ## Notice
-- Using this module will disable sdcardfs
+- Using this module will disable sdcardfs and esdfs using buildprop
 - Not compatible when device has no SD Card slot
   - This is because the module expect to have an SD Card mounted. As for the moment you may use the module without an SD Card by editing /magisk/ts-binds/service.sh. Go to line 17 and read the comment. I will consider a suitable way to workaround this logic in the script.
 - Not compatible when adoptable storage is used
@@ -21,6 +21,14 @@ For example, if you mirror the `Download` folder on Internal with the `Stuff fro
 
 ## Changelog (2 recent versions)
 ### 1.0.9
+**Additions**
+- New `mount` parameter to output the system's mount entries. Command `tsbinds mount` is to execute in shell
+- New `pairs` parameter to output the pair names in the `folderlist`. Great to do quick revision. Command `tsbinds pairs` is to execute in shell
+
+**Fixes**
+- Fix the mount namespace issue - now binds and unbinds take effect the way it should be!
+  - All the commands are now passed through `su -M -c` to take effect on the global namespace.
+
 **Modifications**
 - Change to use busybox
   - Uses hardcoded PATH towards the busybox folder `/sbin/.core/busybox`
