@@ -40,6 +40,7 @@ function printhelp {
     echo "                     pairs in folderlist"
     echo "bind <bind name> ... Binds a specific entry"
     echo "                     by its name"
+    echo "bind o <src> <des> . Binds <src> to <des>"
     echo "bind all ........... Binds all entries "
     echo "bind o <src> <des> . Binds <src> to <des>"
     echo "unbind <bind name> . Unbinds a specific"
