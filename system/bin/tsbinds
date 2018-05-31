@@ -18,14 +18,16 @@ fi
 
 # Functions ----------------------------------------------
 MODDIR=/sbin/.core/img/ts-binds
+datadir=/data/ts-binds
 int=/data/media/0
 sd=$(grep -m 1 -Eo "/mnt/media_rw/[0-9A-Z]{4}-[0-9A-Z]{4}" /proc/mounts)
-folderlist=$MODDIR/cached-folderlist.sh
+folderlist=$datadir/cached-folderlist.sh
 folderlistuser=$int/ts-binds-folderlist.txt
 logfile=$int/ts-binds.log
 
-su="/sbin/su -M -c"
-log="tee -a $logfile"
+function supass {
+    /sbin/su -M -c "$@"
+}
 
 function printhelp {
     echo "tsbinds [options] [arg]"
@@ -68,7 +70,8 @@ function printhelp {
     echo "Note: running the command reinit, and unbind, move with \"all\" argument may return \"unmount\" errors. Most of the time they can be safely ignored."
 }
 function tslog {
-   echo -e "$1" |& tee -a $log
+    echo -e "$(date +'%F %T'):\n  $1\n" >> $logfile
+    echo -e "$1"
 }
 
 # No action given ----------------------------------------
@@ -84,7 +87,8 @@ elif [ "$1" == "help" ] || [ "$1" == "h" ]; then
 # Bind ---------------------------------------------------
 elif [ "$1" == "bind" ]; then
     function folderbind {
-        if $su mountpoint "$3"; then
+        cmd="mountpoint -q \"$3\""
+        if (supass $cmd); then
             tslog "$1 is already binded"
         elif [ ! -d "$2" ] && [ ! -f "$2" ]; then
             tslog "Bind aborted: Folder '$2' as source doesn't exist!"
@@ -93,7 +97,8 @@ elif [ "$1" == "bind" ]; then
             tslog "Bind aborted: Folder '$3' as target doesn't exist!"
             return 1
         else
-            ($su mount --rbind "$2" "$3" && tslog "Bind successful: $1" || tslog "Bind failed: $1") |& $log
+            cmd="mount --rbind \"$2\" \"$3\""
+            (supass $cmd) && tslog "Bind successful: $1" || tslog "Bind failed: $1"
         fi
     }
     if [ ! "$2" ]; then
@@ -113,10 +118,12 @@ elif [ "$1" == "bind" ]; then
 # Unbind -------------------------------------------------
 elif [ "$1" == "unbind" ]; then
     function folderbind {
-        if ! $su mountpoint "$3"; then
+        cmd="mountpoint -q \"$3\""
+        if ! (supass $cmd); then
             tslog "$1 is already unbinded"
         else
-            ($su umount "$3" && tslog "Unbind successful: $1" || tslog "Unbind failed: $1") |& $log
+            cmd="umount \"$3\""
+            (supass $cmd) && tslog "Unbind successful: $1" || tslog "Unbind failed: $1"
         fi
     }
     if [ ! "$2" ]; then
@@ -136,7 +143,8 @@ elif [ "$1" == "unbind" ]; then
 # Check --------------------------------------------------
 elif [ "$1" == "check" ]; then
     function folderbind {
-        ($su mountpoint "$3" && tslog "$1 is BINDED" || tslog "$1 is NOT binded") |& $log
+        cmd="mountpoint -q \"$3\""
+        (supass $cmd) && tslog "$1 is BINDED" || tslog "$1 is NOT binded"
     }
     if [ ! "$2" ]; then
         echo 'E: Bind name is not provided!';
@@ -152,24 +160,18 @@ elif [ "$1" == "check" ]; then
 # Update -------------------------------------------------
 elif [ "$1" == "update" ]; then
     if [ ! -f $folderlistuser ]; then
-        cp $MODDIR/ts-binds-folderlist.txt $folderlistuser |& $log
-        chmod 0664 $folderlistuser |& $log
-        chown 1023:1023 $folderlistuser |& $log
+        cp $datadir/fresh-folderlist.txt $folderlistuser
         tslog "Copied user list to internal storage"
         tsbinds update
     elif [ ! -f $folderlist ]; then
-        cp $folderlistuser $folderlist |& $log
-        chmod 0755 $folderlist |& $log
-        chown 0:0 $folderlist |& $log
+        cp $folderlistuser $folderlist
         tslog "Cached the user list"
     elif [ "$2" ] && [ "$2" == "f" ]; then
-        cp -f $folderlistuser $folderlist |& $log
+        cp -f $folderlistuser $folderlist
         tslog "Force-updated cached list"
     elif [ ! $folderlist -nt $folderlistuser ]; then
         tslog "Difference found between cached and original user list"
-        cp -f $folderlistuser $folderlist |& $log
-        chmod 0755 $folderlist |& $log
-        chown 0:0 $folderlist |& $log
+        cp -f $folderlistuser $folderlist
         tslog "Updated cached list"
     else
         tslog "No update made to cached list"
@@ -182,10 +184,10 @@ elif [ "$1" == "reinit" ]; then
 
 # Enable or disable --------------------------------------
 elif [ "$1" == "disable" ]; then
-    touch $MODDIR/disable.txt |& $log
+    touch $MODDIR/disable.txt
     tslog "ts-binds automatic bind disabled"
 elif [ "$1" == "enable" ]; then
-    rm -f $MODDIR/disable.txt |& $log
+    rm -f $MODDIR/disable.txt
     tslog "ts-binds automatic bind enabled"
 
 # Print log ----------------------------------------------
@@ -195,19 +197,22 @@ elif [ "$1" == "log" ]; then
     
 # Print mount --------------------------------------------
 elif [ "$1" == "mount" ]; then
-    $su mount
+    supass mount
     echo
     
-# Print folder pairs -----------------------------------
+# Print folder pairs -------------------------------------
 elif [ "$1" == "pairs" ]; then
-    awk '{print $2}' $folderlistuser
-    echo
+    while IFS='' read -r line || [[ -n "$line" ]]; do
+        if ! (echo $line | grep -Eo "#\| +" > /dev/null 2> /dev/null); then
+            echo $line | awk '{print $2}'
+        fi
+    done < $folderlist
 
 # Action unrecognised ------------------------------------
 else
     echo "E: Unknown action \"$1\" supplied"
 fi
 
-# Force log proper permission
-chown 1023:1023 $logfile $folderlistuser
-chmod 0664 $logfile $folderlistuser
+# Force log proper permission ----------------------------
+chown 1023:1023 $logfile $folderlistuser $folderlist
+chmod 0664 $logfile $folderlistuser $folderlist
