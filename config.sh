@@ -48,12 +48,6 @@ print_modname() {
   ui_print " "
 }
 
-print_onFinish() {
-  ui_print " "
-  ui_print "[i] Flashing is done!"
-  ui_print "------------------------------------------------"
-}
-
 ##########################################################################################
 # Replace list
 ##########################################################################################
@@ -93,10 +87,12 @@ set_permissions() {
   # set_perm  $MODPATH/system/lib/libart.so       0       0       0644
 
   # The following is default permissions, DO NOT remove
-  set_perm_recursive  $MODPATH  0  0  0755  0644
-  set_perm $MODPATH/service.sh  0  0  0755
-  set_perm $MODPATH/system/bin/tsbinds  0  0  0755
-  set_perm $MODPATH/ts-binds-folderlist.txt  0  0  0666
+  set_perm_recursive  $MODPATH                         0    0  0755  0644
+  
+  set_perm $MODPATH/service.sh                         0    0  0755
+  set_perm $MODPATH/system/bin/tsbinds                 0    0  0755
+  set_perm $MODPATH/data/fresh-folderlist.txt       1023 1023  0664
+  set_perm $MODPATH/data/config.txt                    0    0  0666
 }
 
 ##########################################################################################
@@ -109,3 +105,14 @@ set_permissions() {
 # difficult for you to migrate your modules to newer template versions.
 # Make update-binary as clean as possible, try to only do function calls in it.
 
+set_data() {
+  if [ ! -d /data/ts-binds ]; then
+    mv $MODPATH/data /data/ts-binds
+  fi
+}
+
+print_onFinish() {
+  ui_print " "
+  ui_print "[i] Flashing is done!"
+  ui_print "------------------------------------------------"
+}

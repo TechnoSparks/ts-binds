@@ -7,21 +7,35 @@ Derived from a very long-living trick for users who are struggling with the inte
 For example, if you mirror the `Download` folder on Internal with the `Stuff from Internet` folder on your SD Card, the same list of cat pictures will be shown on both directories when navigated via a file manager, and any changes will take effect on both paths.
 
 ## Notice
-- Using this module will disable sdcardfs
-- Not compatible with Huawei stock ROMs (Please report if now works on 1.0.8)
+- Using this module will disable sdcardfs and esdfs using buildprop
 - Not compatible when device has no SD Card slot
-  - Read below
+  - This is because the module expect to have an SD Card mounted. As for the moment you may use the module without an SD Card by editing /magisk/ts-binds/service.sh. Go to line 17 and read the comment. I will consider a suitable way to workaround this logic in the script.
 - Not compatible when adoptable storage is used
-  - Hey there! This is because the module expect to have an SD Card mounted. As for the moment you may use the module without an SD Card by editing /magisk/ts-binds/service.sh. Go to line 17 and read the comment. I will consider a suitable way to workaround this logic in the script.
 
 ## Links
-- [**More Info and Further Reading**](https://www.technosparks.net/pages/product-documentation/ts-binds)
+- [**More Info and Further Reading**](https://www.technosparks.net/pages/product-documentation/ts-binds?from=readme)
 - [XDA Developers thread](https://forum.xda-developers.com/apps/magisk/module-ts-binds-t3628856)
 - [→ DOWNLOAD ZIP](https://github.com/Magisk-Modules-Repo/ts-binds/releases) (Also available in Magisk Repo)
 - [GitHub](https://github.com/Magisk-Modules-Repo/ts-binds/)
 - [Changelogs](https://github.com/Magisk-Modules-Repo/ts-binds/releases)
 
 ## Changelog (2 recent versions)
+### 1.0.9
+**Additions**
+- New `mount` parameter to output the system's mount entries. Command `tsbinds mount` is to execute in shell
+- New `pairs` parameter to output the pair names in the `folderlist`. Great to do quick revision. Command `tsbinds pairs` is to execute in shell
+
+**Fixes**
+- Fix the mount namespace issue - now binds and unbinds take effect the way it should be!
+  - All the commands are now passed through `su -M -c` to take effect on the global namespace.
+
+**Modifications**
+- Change to use busybox
+  - Uses hardcoded PATH towards the busybox folder `/sbin/.core/busybox`
+- Uses hardcoded path towards module directory `/sbin/.core/img/ts-binds`
+  - Was `/magisk/ts-binds` but /magisk is a symbolic link towards above path
+  - I know, hardcoding paths is not recommended by the Magisk documentation, but the module goes forward by Magisk's new version. The reason I had to do this is because there is no other easy alternative to find module's dir other than extreme measures of loopdevice mounting or looping through countless number of directories from root. So instead of taxing the shell during boot, I prefer not to do that instead.
+
 ### 1.0.8
 
 **Regressions**
@@ -33,17 +47,3 @@ For example, if you mirror the `Download` folder on Internal with the `Stuff fro
 
 **Modifications**
 - Updated help snippet
-
-### 1.0.6 & 1.0.7
-**Additions**
-- Disable sdcardfs by using prop entries
-
-**Fixes**  
-- Invalid path to log file in service.sh
-
-**Modifications**  
-- Magisk v14 compliant
-- SD card name will not be cached anymore
-- Simpler `grep`ing of SD card name
-- File overwrite warning is added to `tsbinds help` for the `tsbinds move` feature
-- Readme.md now points to GitHub releases to show changelogs instead of commits as changelogs

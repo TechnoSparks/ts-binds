@@ -1,3 +1,6 @@
 # Disable sdcardfs by prop
-persist.sys.sdcardfs=force_off
 ro.sys.sdcardfs=false
+persist.sys.sdcardfs=force_off
+persist.esdfs_sdcard=false
+persist.fuse_sdcard=true
+
