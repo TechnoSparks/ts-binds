@@ -7,10 +7,11 @@ Derived from a very long-living trick for users who are struggling with the inte
 For example, if you mirror the `Download` folder on Internal with the `Stuff from Internet` folder on your SD Card, the same list of cat pictures will be shown on both directories when navigated via a file manager, and any changes will take effect on both paths.
 
 ## Notice
-- Using this module will disable sdcardfs and esdfs using buildprop
-- Not compatible when device has no SD Card slot
-  - This is because the module expect to have an SD Card mounted. As for the moment you may use the module without an SD Card by editing /magisk/ts-binds/service.sh. Go to line 17 and read the comment. I will consider a suitable way to workaround this logic in the script.
-- Not compatible when adoptable storage is used
+- Not compatible with Android Pie (at the moment)
+- Using this module will disable sdcardfs through build.prop (may be overridable if ROM enforces sdcardfs which means:)
+- Not compatible if the ROM strictly enforces SDCardFS
+- Not compatible when device has no SD Card slot (logic error in script file, the module expects an SD card on boot)
+- Not compatible when adoptable storage is used (logic error in script file, the module expects an SD card on boot)
 
 ## Links
 - [**More Info and Further Reading**](https://www.technosparks.net/pages/product-documentation/ts-binds?from=readme)
