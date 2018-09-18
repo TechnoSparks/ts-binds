@@ -1,6 +1,1 @@
-# Disable sdcardfs by prop
-ro.sys.sdcardfs=false
-persist.sys.sdcardfs=force_off
-persist.esdfs_sdcard=false
-persist.fuse_sdcard=true
-
+# Nothing to do here - essentials have been enforced in post-fs-data

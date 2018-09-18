@@ -21,6 +21,18 @@ For example, if you mirror the `Download` folder on Internal with the `Stuff fro
 - [Changelogs](https://github.com/Magisk-Modules-Repo/ts-binds/releases)
 
 ## Changelog (2 recent versions)
+
+### 1.1
+**Regressions**
+- Magisk < v17 is no longer supported due to template change
+
+**Additions**
+- _None_
+
+**Modifications**
+- No longer use system.prop but instead enforce using `resetprop` in post-fs-data mode. This _should_ aggressively disable SDCardFS
+- Update minmagisk to version 17.0
+
 ### 1.0.9
 **Additions**
 - New `mount` parameter to output the system's mount entries. Command `tsbinds mount` is to execute in shell
@@ -36,15 +48,3 @@ For example, if you mirror the `Download` folder on Internal with the `Stuff fro
 - Uses hardcoded path towards module directory `/sbin/.core/img/ts-binds`
   - Was `/magisk/ts-binds` but /magisk is a symbolic link towards above path
   - I know, hardcoding paths is not recommended by the Magisk documentation, but the module goes forward by Magisk's new version. The reason I had to do this is because there is no other easy alternative to find module's dir other than extreme measures of loopdevice mounting or looping through countless number of directories from root. So instead of taxing the shell during boot, I prefer not to do that instead.
-
-### 1.0.8
-
-**Regressions**
-- Not backwards-compatible for Magisk version <15 due to template change
-
-**Fixes**
-- No longer relies on shebang /system/xbin/bash. In fact, it was stupid for me to do this back then :S
-  - This will ensure greater support to different devices especially on stock ROM
-
-**Modifications**
-- Updated help snippet

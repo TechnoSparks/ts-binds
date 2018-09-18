@@ -25,10 +25,10 @@
 AUTOMOUNT=true
 
 # Set to true if you need to load system.prop
-PROPFILE=true
+PROPFILE=false
 
 # Set to true if you need post-fs-data script
-POSTFSDATA=false
+POSTFSDATA=true
 
 # Set to true if you need late_start service script
 LATESTARTSERVICE=true
@@ -88,7 +88,6 @@ set_permissions() {
 
   # The following is default permissions, DO NOT remove
   set_perm_recursive  $MODPATH                         0    0  0755  0644
-  
   set_perm $MODPATH/service.sh                         0    0  0755
   set_perm $MODPATH/system/bin/tsbinds                 0    0  0755
   set_perm $MODPATH/data/fresh-folderlist.txt       1023 1023  0664
