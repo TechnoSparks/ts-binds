@@ -84,6 +84,7 @@ MODPATH=$MOUNTPATH/$MODID
 
 # Print mod name
 print_modname
+check_android_version
 
 ##########################################################################################
 # Install

@@ -110,6 +110,27 @@ set_data() {
   fi
 }
 
+check_android_version() {
+  ui_print ""
+  ui_print "Checking if we can check Android version"
+  if command -v expr > /dev/null 2> /dev/null; then
+    ui_print "Checking Android version"
+    ver=$(resetprop ro.build.version.release)
+    if ! expr $ver \<= 8.1 > /dev/null 2> /dev/null; then
+      ui_print "Android Pie is not supported"
+      ui_print ""
+      ui_print "[!] Operation aborted"
+      ui_print "------------------------------------------------"
+      exit 1
+    fi
+  else
+    ui_print "Hm, expr does not exist in your ROM"
+    ui_print "As of now, ts-binds will not work on Pie"
+    ui_print "Please remove module if you are on Pie"
+  fi
+  ui_print " "
+}
+
 print_onFinish() {
   ui_print " "
   ui_print "[i] Flashing is done!"
