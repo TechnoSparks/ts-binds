@@ -111,13 +111,12 @@ set_data() {
 }
 
 check_android_version() {
-  ui_print ""
   ui_print "Checking if we can check Android version"
   if command -v expr > /dev/null 2> /dev/null; then
     ui_print "Checking Android version"
-    ver=$(resetprop ro.build.version.release)
-    if ! expr $ver \<= 8.1 > /dev/null 2> /dev/null; then
-      ui_print "Android Pie is not supported"
+    ver=$(getprop ro.build.version.release)
+    if expr $ver \>= 9 > /dev/null 2> /dev/null; then
+      ui_print "Android Pie is not supported!"
       ui_print ""
       ui_print "[!] Operation aborted"
       ui_print "------------------------------------------------"
