@@ -31,9 +31,9 @@ function supass {
 
 function printhelp {
     echo "tsbinds [options] [arg]"
-    echo 
+    echo
     echo "Available options:"
-    echo 
+    echo
     echo "help ............... Show this reference text"
     echo "h .................. Ditto"
     echo "pairs .............. Prints out the folder"
@@ -66,8 +66,8 @@ function printhelp {
     echo "mount .............. Prints out the mount"
     echo "                     entries"
     echo
-    
-    echo 
+
+    echo
     echo "Note: running the command reinit, and unbind, move with \"all\" argument may return \"unmount\" errors. Most of the time they can be safely ignored."
 }
 function tslog {
@@ -185,22 +185,22 @@ elif [ "$1" == "reinit" ]; then
 
 # Enable or disable --------------------------------------
 elif [ "$1" == "disable" ]; then
-    touch $MODDIR/disable.txt
+    touch $datadir/disable.txt
     tslog "ts-binds automatic bind disabled"
 elif [ "$1" == "enable" ]; then
-    rm -f $MODDIR/disable.txt
+    rm -f $datadir/disable.txt
     tslog "ts-binds automatic bind enabled"
 
 # Print log ----------------------------------------------
 elif [ "$1" == "log" ]; then
     cat $logfile
     echo
-    
+
 # Print mount --------------------------------------------
 elif [ "$1" == "mount" ]; then
     supass mount
     echo
-    
+
 # Print folder pairs -------------------------------------
 elif [ "$1" == "pairs" ]; then
     while IFS='' read -r line || [[ -n "$line" ]]; do

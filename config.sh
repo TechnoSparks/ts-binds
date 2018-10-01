@@ -125,6 +125,7 @@ check_android_version() {
   else
     ui_print "Hm, expr does not exist in your ROM"
     ui_print "As of now, ts-binds will not work on Pie"
+    ui_print "Installation will still continue"
     ui_print "Please remove module if you are on Pie"
   fi
   ui_print " "
