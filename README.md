@@ -2,9 +2,13 @@
 ts-binds binds two different folders on your device so that both folders share the same contents
 
 ## What does it do
+_Essentially, this "binding" method is widely used to save space on internal storage!_
+
 Derived from a very long-living trick for users who are struggling with the internal storage space available on their phones, while at the same time has the benefit of inserting an SD card, ts-binds will make use of already available functions on your device, to mirror a path to another path, effectively making both paths indistinguishable.
 
 For example, if you mirror the `Download` folder on Internal with the `Stuff from Internet` folder on your SD Card, the same list of cat pictures will be shown on both directories when navigated via a file manager, and any changes will take effect on both paths.
+
+This saves space because the files **physically** reside on the external storage instead of internal storage.
 
 ## Notice
 - Not compatible with Android Pie (at the moment)
