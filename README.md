@@ -31,10 +31,11 @@ This saves space because the files **physically** reside on the external storage
 - Magisk < v17 is no longer supported due to template change
 
 **Additions**
-- _None_
+- ts-binds is now licensed with ... Unlicensed! Read LICENSE file for info
 
 **Modifications**
 - No longer use system.prop but instead enforce using `resetprop` in post-fs-data mode. This _should_ aggressively disable SDCardFS
+- `resetprop` now access the persist storage
 - Update minmagisk to version 17.0
 
 ### 1.0.9
