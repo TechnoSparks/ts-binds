@@ -82,6 +82,10 @@ function printhelp {
     echo "log ................ Prints out the log"
     echo "mount .............. Prints out the mount"
     echo "                     entries"
+    echo "legacy <option> .... Options: (on|off|default)"
+    echo "                     On forces FUSE"
+    echo "                     Off forces SDCardFS"
+    echo "                     Default means default"
     echo
 
     echo
@@ -238,6 +242,33 @@ elif [ "$1" == "pairs" ]; then
             echo $line | awk '{print $2}'
         fi
     done < $folderlist
+
+# Force enable/disable legacy ----------------------------
+elif [ "$1" == "legacy" ]; then
+    if [ ! "$2" ]; then
+        echo "You need to decide if legacy on or legacy off!"
+        echo "tsbinds legacy on      :: to force on (FUSE)"
+        echo "tsbinds legacy off     :: to force off (SDCardFS)"
+        echo "tsbinds legacy default :: to fallback to default"
+    elif [ "$2" == "off" ]; then
+        echo "Forcing SDCardFS" | tslog
+        if [ -f $datadir/legacy ]; then rm -f $datadir/legacy; fi
+        echo "resetprop -p ro.sys.sdcardfs true" > $MODDIR/post-fs-data.sh
+        echo "resetprop -p persist.sys.sdcardfs force_on" >> $MODDIR/post-fs-data.sh
+        echo "resetprop -p persist.fuse_sdcard false" >> $MODDIR/post-fs-data.sh
+    elif [ "$2" == "on" ]; then
+        echo "Forcing FUSE" | tslog
+        if [ ! -f $datadir/legacy ]; then touch $datadir/legacy; fi
+        echo "resetprop -p ro.sys.sdcardfs false" > $MODDIR/post-fs-data.sh
+        echo "resetprop -p persist.sys.sdcardfs force_off" >> $MODDIR/post-fs-data.sh
+        echo "resetprop -p persist.fuse_sdcard true" >> $MODDIR/post-fs-data.sh
+    elif [ "$2" == "default" ]; then
+        echo "Setting Default" | tslog
+        if [ -f $datadir/legacy-device ] && [ ! -f $datadir/legacy ]; then touch $datadir/legacy; fi
+        if [ -f $MODDIR/post-fs-data.sh ]; then rm -f $MODDIR/post-fs-data.sh; fi
+    else
+        echo "Unknown parameter: ${$2}!" | tslog
+    fi
 
 # Action unrecognised ------------------------------------
 else
