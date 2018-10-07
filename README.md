@@ -34,6 +34,7 @@ This saves space because the files **physically** reside on the external storage
 
 **Modifications**
 - Update minmagisk to version 17.0
+- Rename `disable.txt` to `disable`
 
 ### 1.0.9
 **Additions**
