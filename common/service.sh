@@ -4,7 +4,8 @@
 # Functions ----------------------------------------------
 MODDIR=${0%/*}
 sdstatus=0
-logfile=/data/media/0/ts-binds.log
+logfile=/data/ts-binds/ts-binds.log
+logfileuser=/data/media/0/ts-binds.log
 log="tee -a $logfile"
 echo -e "Log initialised at: $(date) \n\n" > $logfile
 
@@ -12,7 +13,7 @@ echo -e "Log initialised at: $(date) \n\n" > $logfile
 tsbinds update
 
 # Barrier, do not continue until SD card is mounted ----
-sleep 10
+sleep 7
 until [ $sdstatus == "1" ]; do
     if sdname=$(grep -m 1 "/mnt/media_rw/" /proc/mounts | grep -m 1 -Eo "[0-9A-Z]{4}-[0-9A-Z]{4}"); then
         sdstatus=1
@@ -31,3 +32,6 @@ fi
 
 # End bind ---------------------------------------------
 echo "Script execution completed" | $log
+cp -f $logfile $logfileuser
+chown 1023:1023 $logfileuser $folderlistuser $folderlist
+chmod 0664 $logfileuser $folderlistuser $folderlist

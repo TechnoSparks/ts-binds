@@ -5,6 +5,7 @@
 busybox=/sbin/.core/busybox
 oPATH=$PATH
 PATH=$busybox:$oPATH
+set -o pipefail
 
 # Check if run under root --------------------------------
 if ! ls /data > /dev/null 2> /dev/null; then
@@ -29,12 +30,13 @@ sd=/mnt/runtime/default/$sdname
 legacy=0
 folderlist=$datadir/cached-folderlist.sh
 folderlistuser=$intraw/ts-binds-folderlist.txt
-logfile=$intraw/ts-binds.log
+logfile=$datadir/ts-binds.log
+logfileuser=$intraw/ts-binds.log
 log="tee -a $logfile"
 
 if [ -f $datadir/legacy ]; then
     legacy=1
-    int=/data/media/0
+    int=$intraw
     sd=$(grep -m 1 -Eo "/mnt/media_rw/[0-9A-Z]{4}-[0-9A-Z]{4}" /proc/mounts)
 fi
 
@@ -106,7 +108,7 @@ elif [ "$1" == "help" ] || [ "$1" == "h" ]; then
 # Bind ---------------------------------------------------
 elif [ "$1" == "bind" ]; then
     function folderbind {
-        if supass mountpoint -q "$3" | $log; then
+        if supass mountpoint -q \"$3\"; then
             echo "$1 is already binded" | $log
         elif [ ! -d "$2" ] && [ ! -f "$2" ]; then
             echo "Bind aborted: Folder '$2' as source doesn't exist!" | $log
@@ -116,12 +118,16 @@ elif [ "$1" == "bind" ]; then
             exit 1
         else
             echo "Binding $1" | $log
-            if supass mount --rbind "$2" "$3" | $log; then
+            if /sbin/su -M -c mount --rbind \"$2\" \"$3\" 2>> $logfile; then
+                intr="$(echo $3 | sed 's/default/read/g')"
+                intw="$(echo $3 | sed 's/default/write/g')"
                 if [ $legacy != "1" ]; then
-                    (supass mount -o remount,gid=9997,mask=6 "$intr$3" | $log) || gexit
-                    (supass mount -o remount,gid=9997,mask=6 "$intw$3" | $log) || gexit
+                    (supass mount -o remount,gid=9997,mask=6 \"$intr\") || gexit
+                    (supass mount -o remount,gid=9997,mask=6 \"$intw\") || gexit
                 fi
                 echo "Bind successful" | $log
+            else
+                echo "Bind failed" | $log
             fi
         fi
     }
@@ -129,12 +135,12 @@ elif [ "$1" == "bind" ]; then
         echo 'E: Bind name is not provided!' | $log
     elif [ "$2" == "all" ]; then
         echo "Binding all entries" | $log
-        source $folderlist | $log
+        source $folderlist
         echo "All entries were processed" | $log
     elif [ "$2" == "o" ]; then
-        folderbind "o" "$3" "$4" | $log
+        folderbind "o" "$3" "$4"
     elif line="$(grep -m 1 "$2" $folderlist)"; then
-        eval $line | $log
+        eval $line
     else
         echo "Unable to bind $2, entry not found in list!" | $log
     fi
@@ -142,11 +148,11 @@ elif [ "$1" == "bind" ]; then
 # Unbind -------------------------------------------------
 elif [ "$1" == "unbind" ]; then
     function folderbind {
-        if ! supass mountpoint -q "$3" | $log; then
+        if ! supass mountpoint -q \"$3\"; then
             echo "$1 is already unbinded" | $log
         else
             echo "Unbinding $1" | $log
-            if supass umount "$3" | $log
+            if supass umount \"$3\" 2>> $logfile
                 then echo "Unbind successful: $1" | $log
                 else echo "Unbind failed: $1" | $log;
             fi
@@ -156,12 +162,12 @@ elif [ "$1" == "unbind" ]; then
         echo 'E: Bind name is not provided!' | $log
     elif [ "$2" == "all" ]; then
         echo "Unbinding all entries" | $log
-        source $folderlist | $log
+        source $folderlist
         echo "All entries were processed" | $log
     elif [ "$2" == "o" ]; then
-        folderbind "o" "$3" "$4" | $log
+        folderbind "o" "$3" "$4"
     elif line="$(grep -m 1 "$2" $folderlist)"; then
-        eval $line | $log
+        eval $line
     else
         echo "Unable to unbind $2, entry not found in list!" | $log
     fi
@@ -169,7 +175,7 @@ elif [ "$1" == "unbind" ]; then
 # Check --------------------------------------------------
 elif [ "$1" == "check" ]; then
     function folderbind {
-        if supass mountpoint -q "$3" | $log
+        if supass mountpoint -q \"$3\"
             then echo "$1 is BINDED" | $log
             else echo "$1 is NOT binded" | $log
         fi
@@ -177,10 +183,10 @@ elif [ "$1" == "check" ]; then
     if [ ! "$2" ]; then
         echo 'E: Bind name is not provided!' | $log
     elif [ "$2" == "all" ]; then
-        source $folderlist | $log
+        source $folderlist
         echo "All entries were checked" | $log
     elif line="$(grep -m 1 "$2" $folderlist)"; then
-        eval $line | $log
+        eval $line
     else
         echo "Unable to check $2, entry not found in list!" | $log
     fi
@@ -188,18 +194,18 @@ elif [ "$1" == "check" ]; then
 # Update -------------------------------------------------
 elif [ "$1" == "update" ]; then
     if [ ! -f $folderlistuser ]; then
-        cp $datadir/fresh-folderlist.txt $folderlistuser
+        cp $datadir/fresh-folderlist.txt $folderlistuser  2>> $logfile
         echo "Copied user list to internal storage" | $log
         tsbinds update
     elif [ ! -f $folderlist ]; then
-        cp $folderlistuser $folderlist
+        cp $folderlistuser $folderlist 2>> $logfile
         echo "Cached the user list" | $log
     elif [ "$2" ] && [ "$2" == "f" ]; then
-        cp -f $folderlistuser $folderlist
+        cp -f $folderlistuser $folderlist 2>> $logfile
         echo "Force-updated cached list" | $log
     elif [ ! $folderlist -nt $folderlistuser ]; then
         echo "Difference found between cached and original user list" | $log
-        cp -f $folderlistuser $folderlist | $log
+        cp -f $folderlistuser $folderlist 2>> $logfile
         echo "Updated cached list" | $log
     else
         echo "No update made to cached list" | $log
@@ -222,7 +228,7 @@ elif [ "$1" == "enable" ]; then
     if [ ! -f /data/ts-binds/disable ]; then
         echo "Already enabled!" | $log
     else
-        rm -f $datadir/disable
+        rm -f $datadir/disable 2>> $logfile
         echo "ts-binds automatic bind enabled" | $log
     fi
 
@@ -277,9 +283,11 @@ else
 fi
 
 # Force log proper permission ----------------------------
-chown 1023:1023 $logfile $folderlistuser $folderlist
-chmod 0664 $logfile $folderlistuser $folderlist
+cp -f $logfile $logfileuser
+chown 1023:1023 $logfileuser $folderlistuser $folderlist
+chmod 0664 $logfileuser $folderlistuser $folderlist
 
 # Handover default PATH ----------------------------------
 # in case somebody sourced this fakebin
 PATH=$oPATH
+set +o pipefail
