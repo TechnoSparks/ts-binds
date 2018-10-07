@@ -31,6 +31,7 @@ This saves space because the files **physically** reside on the external storage
 - ts-binds is now licensed with ... Unlicensed! Read LICENSE file for info
 - New binding algorithm to support sdcardfs!
 - Detection algorithm if legacy mode (for FUSE) should be applied on your device
+  - Behaviour can be altered by using the new `legacy` parameter for tsbinds. Run `tsbinds help` in terminal for more info
 
 **Modifications**
 - Update minmagisk to version 17.0
