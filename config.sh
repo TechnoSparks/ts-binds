@@ -110,25 +110,11 @@ set_data() {
   fi
 }
 
-check_android_version() {
-  ui_print "Checking if we can check Android version"
-  if command -v expr > /dev/null 2> /dev/null; then
-    ui_print "Checking Android version"
-    ver=$(getprop ro.build.version.release)
-    if expr $ver \>= 9 > /dev/null 2> /dev/null; then
-      ui_print "Android Pie is not supported!"
-      ui_print ""
-      ui_print "[!] Operation aborted"
-      ui_print "------------------------------------------------"
-      exit 1
-    fi
-  else
-    ui_print "Hm, expr does not exist in your ROM"
-    ui_print "As of now, ts-binds will not work on Pie"
-    ui_print "Installation will still continue"
-    ui_print "Please remove module if you are on Pie!"
+check_for_legacyness() {
+  if ! grep -q "sdcardfs" /proc/mounts; then
+    ui_print "- Is FUSE. ts-binds will work on legacy mode"
+    touch /data/ts-binds/legacy
   fi
-  ui_print " "
 }
 
 print_onFinish() {

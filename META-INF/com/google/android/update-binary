@@ -135,8 +135,9 @@ $LATESTARTSERVICE && cp -af $INSTALLER/common/service.sh $MODPATH/service.sh
 ui_print "- Setting permissions"
 set_permissions
 
-ui_print "- Checking on data folder"
 set_data
+
+check_for_legacyness
 
 ##########################################################################################
 # Finalizing
