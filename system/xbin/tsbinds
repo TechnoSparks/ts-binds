@@ -23,12 +23,13 @@ datadir=/data/ts-binds
 int=/mnt/runtime/default/emulated/0
 intr=/mnt/runtime/read/emulated/0
 intw=/mnt/runtime/write/emulated/0
+intraw=/data/media/0
 sdname=$(grep -m 1 "/mnt/media_rw/" /proc/mounts | grep -m 1 -Eo "[0-9A-Z]{4}-[0-9A-Z]{4}")
 sd=/mnt/runtime/default/$sdname
 legacy=0
 folderlist=$datadir/cached-folderlist.sh
-folderlistuser=$int/ts-binds-folderlist.txt
-logfile=$int/ts-binds.log
+folderlistuser=$intraw/ts-binds-folderlist.txt
+logfile=$intraw/ts-binds.log
 log="tee -a $logfile"
 
 if [ -f $datadir/legacy ]; then
@@ -117,8 +118,8 @@ elif [ "$1" == "bind" ]; then
             echo "Binding $1" | $log
             if supass mount --rbind "$2" "$3" | $log; then
                 if [ $legacy != "1" ]; then
-                    (supass mount -o remount,gid=9997,mask=6 $intr | $log) || gexit
-                    (supass mount -o remount,gid=9997,mask=6 $intw | $log) || gexit
+                    (supass mount -o remount,gid=9997,mask=6 "$intr$3" | $log) || gexit
+                    (supass mount -o remount,gid=9997,mask=6 "$intw$3" | $log) || gexit
                 fi
                 echo "Bind successful" | $log
             fi
@@ -276,10 +277,8 @@ else
 fi
 
 # Force log proper permission ----------------------------
-if [ $legacy == '1']; then
-    chown 1023:1023 $log $folderlistuser $folderlist
-    chmod 0664 $log $folderlistuser $folderlist
-fi
+chown 1023:1023 $logfile $folderlistuser $folderlist
+chmod 0664 $logfile $folderlistuser $folderlist
 
 # Handover default PATH ----------------------------------
 # in case somebody sourced this fakebin
