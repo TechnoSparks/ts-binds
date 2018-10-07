@@ -11,9 +11,6 @@ For example, if you mirror the `Download` folder on Internal with the `Stuff fro
 This saves space because the files **physically** reside on the external storage instead of internal storage.
 
 ## Notice
-- **Not compatible with Android Pie (at the moment)**
-- Using this module will disable sdcardfs through build.prop (may be overridable if ROM enforces sdcardfs which means:)
-- Not compatible if the ROM strictly enforces SDCardFS
 - Not compatible when device has no SD Card slot (logic error in script file, the module expects an SD card on boot)
 - Not compatible when adoptable storage is used (logic error in script file, the module expects an SD card on boot)
 
@@ -32,10 +29,10 @@ This saves space because the files **physically** reside on the external storage
 
 **Additions**
 - ts-binds is now licensed with ... Unlicensed! Read LICENSE file for info
+- New binding algorithm to support sdcardfs!
+- Detection algorithm if legacy mode (for FUSE) should be applied on your device
 
 **Modifications**
-- No longer use system.prop but instead enforce using `resetprop` in post-fs-data mode. This _should_ aggressively disable SDCardFS
-- `resetprop` now access the persist storage
 - Update minmagisk to version 17.0
 
 ### 1.0.9
