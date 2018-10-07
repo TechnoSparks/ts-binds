@@ -207,11 +207,19 @@ elif [ "$1" == "reinit" ]; then
 
 # Enable or disable --------------------------------------
 elif [ "$1" == "disable" ]; then
-    touch $datadir/disable.txt
-    echo "ts-binds automatic bind disabled" | $log
+    if [ ! -f /data/ts-binds/disable ]; then
+        touch $datadir/disable
+        echo "ts-binds automatic bind disabled" | $log
+    else
+        echo "Already disabled!" | $log
+    fi
 elif [ "$1" == "enable" ]; then
-    rm -f $datadir/disable.txt
-    echo "ts-binds automatic bind enabled" | $log
+    if [ ! -f /data/ts-binds/disable ]; then
+        echo "Already enabled!" | $log
+    else
+        rm -f $datadir/disable
+        echo "ts-binds automatic bind enabled" | $log
+    fi
 
 # Print log ----------------------------------------------
 elif [ "$1" == "log" ]; then
