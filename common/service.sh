@@ -15,8 +15,6 @@ echo -e "Log initialised at: $(date) \n\n" > $logfile
 tsbinds update
 
 # Barrier, do not continue until SD card is mounted ----
-# if you want to use module but your device has no
-# sd slot, then you may delete/comment this whole section
 until [ $sdstatus == "1" ]; do
     if sdname=$(grep -m 1 "/mnt/media_rw/" /proc/mounts | grep -m 1 -Eo "[0-9A-Z]{4}-[0-9A-Z]{4}"); then
         sdstatus=1

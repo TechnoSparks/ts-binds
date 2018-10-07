@@ -3,6 +3,7 @@
 
 # All hail busybox for standardising this script!
 busybox=/sbin/.core/busybox
+oPATH=$PATH
 PATH=$busybox:$PATH
 
 # Check if run under root --------------------------------
@@ -19,14 +20,30 @@ fi
 # Functions ----------------------------------------------
 MODDIR=/sbin/.core/img/ts-binds
 datadir=/data/ts-binds
-int=/data/media/0
-sd=$(grep -m 1 -Eo "/mnt/media_rw/[0-9A-Z]{4}-[0-9A-Z]{4}" /proc/mounts)
+int=/mnt/runtime/default/emulated/0
+intr=/mnt/runtime/read/emulated/0
+intw=/mnt/runtime/write/emulated/0
+sdname=$(grep -m 1 "/mnt/media_rw/" /proc/mounts | grep -m 1 -Eo "[0-9A-Z]{4}-[0-9A-Z]{4}")
+sd=/mnt/runtime/default/$sdname
+legacy=0
 folderlist=$datadir/cached-folderlist.sh
 folderlistuser=$int/ts-binds-folderlist.txt
 logfile=$int/ts-binds.log
+log="tee -a $logfile"
+
+if [ -f $datadir/legacy ]; then
+    legacy=1
+    int=/data/media/0
+    sd=$(grep -m 1 -Eo "/mnt/media_rw/[0-9A-Z]{4}-[0-9A-Z]{4}" /proc/mounts)
+fi
 
 function supass {
     /sbin/su -M -c "$@"
+}
+
+function gexit {
+    echo "Error occured here. Exiting" | $log
+    exit 1
 }
 
 function printhelp {
@@ -70,10 +87,6 @@ function printhelp {
     echo
     echo "Note: running the command reinit, and unbind, move with \"all\" argument may return \"unmount\" errors. Most of the time they can be safely ignored."
 }
-function tslog {
-    echo -e "$(date +'%F %T'):\n  $1\n" >> $logfile
-    echo -e "$1"
-}
 
 # No action given ----------------------------------------
 if [ ! "$1" ]; then
@@ -88,94 +101,103 @@ elif [ "$1" == "help" ] || [ "$1" == "h" ]; then
 # Bind ---------------------------------------------------
 elif [ "$1" == "bind" ]; then
     function folderbind {
-        cmd="mountpoint -q \"$3\""
-        if (supass $cmd); then
-            tslog "$1 is already binded"
+        if supass mountpoint -q "$3" | $log; then
+            echo "$1 is already binded" | $log
         elif [ ! -d "$2" ] && [ ! -f "$2" ]; then
-            tslog "Bind aborted: Folder '$2' as source doesn't exist!"
-            return 1
+            echo "Bind aborted: Folder '$2' as source doesn't exist!" | $log
+            exit 1
         elif [ ! -d "$3" ] && [ ! -f "$3" ]; then
-            tslog "Bind aborted: Folder '$3' as target doesn't exist!"
-            return 1
+            echo "Bind aborted: Folder '$3' as target doesn't exist!" | $log
+            exit 1
         else
-            cmd="mount --rbind \"$2\" \"$3\""
-            (supass $cmd) && tslog "Bind successful: $1" || tslog "Bind failed: $1"
+            echo "Binding $1" | $log
+            if supass mount --rbind "$2" "$3" | $log; then
+                if [ $legacy != "1" ]; then
+                    (supass mount -o remount,gid=9997,mask=6 $intr | $log) || gexit
+                    (supass mount -o remount,gid=9997,mask=6 $intw | $log) || gexit
+                fi
+                echo "Bind successful" | $log
+            fi
         fi
     }
     if [ ! "$2" ]; then
-        echo 'E: Bind name is not provided!';
+        echo 'E: Bind name is not provided!' | $log
     elif [ "$2" == "all" ]; then
-        tslog "Binding all entries"
-        source $folderlist
-        tslog "All entries were processed"
+        echo "Binding all entries" | $log
+        source $folderlist | $log
+        echo "All entries were processed" | $log
     elif [ "$2" == "o" ]; then
-        folderbind "o" $3 $4
+        folderbind "o" "$3" "$4" | $log
     elif line="$(grep -m 1 "$2" $folderlist)"; then
-        eval $line
+        eval $line | $log
     else
-        tslog "Unable to bind $2, entry not found in list!"
+        echo "Unable to bind $2, entry not found in list!" | $log
     fi
 
 # Unbind -------------------------------------------------
 elif [ "$1" == "unbind" ]; then
     function folderbind {
-        cmd="mountpoint -q \"$3\""
-        if ! (supass $cmd); then
-            tslog "$1 is already unbinded"
+        if ! supass mountpoint -q "$3" | $log; then
+            echo "$1 is already unbinded" | $log
         else
-            cmd="umount \"$3\""
-            (supass $cmd) && tslog "Unbind successful: $1" || tslog "Unbind failed: $1"
+            echo "Unbinding $1" | $log
+            if supass umount "$3" | $log
+                then echo "Unbind successful: $1" | $log
+                else echo "Unbind failed: $1" | $log;
+            fi
         fi
     }
     if [ ! "$2" ]; then
-        echo 'E: Bind name is not provided!';
+        echo 'E: Bind name is not provided!' | $log
     elif [ "$2" == "all" ]; then
-        tslog "Unbinding all entries"
-        source $folderlist
-        tslog "All entries were processed"
+        echo "Unbinding all entries" | $log
+        source $folderlist | $log
+        echo "All entries were processed" | $log
     elif [ "$2" == "o" ]; then
-        folderbind "o" $3 $4
+        folderbind "o" "$3" "$4" | $log
     elif line="$(grep -m 1 "$2" $folderlist)"; then
-        eval $line
+        eval $line | $log
     else
-        tslog "Unable to unbind $2, entry not found in list!"
+        echo "Unable to unbind $2, entry not found in list!" | $log
     fi
 
 # Check --------------------------------------------------
 elif [ "$1" == "check" ]; then
     function folderbind {
-        cmd="mountpoint -q \"$3\""
-        (supass $cmd) && tslog "$1 is BINDED" || tslog "$1 is NOT binded"
+        if supass mountpoint -q "$3" | $log
+            then echo "$1 is BINDED" | $log
+            else echo "$1 is NOT binded" | $log
+        fi
     }
     if [ ! "$2" ]; then
-        echo 'E: Bind name is not provided!';
+        echo 'E: Bind name is not provided!' | $log
     elif [ "$2" == "all" ]; then
-        source $folderlist
-        tslog "All entries were checked"
+        source $folderlist | $log
+        echo "All entries were checked" | $log
     elif line="$(grep -m 1 "$2" $folderlist)"; then
-        eval $line
+        eval $line | $log
     else
-        tslog "Unable to check $2, entry not found in list!"
+        echo "Unable to check $2, entry not found in list!" | $log
     fi
 
 # Update -------------------------------------------------
 elif [ "$1" == "update" ]; then
     if [ ! -f $folderlistuser ]; then
         cp $datadir/fresh-folderlist.txt $folderlistuser
-        tslog "Copied user list to internal storage"
+        echo "Copied user list to internal storage" | $log
         tsbinds update
     elif [ ! -f $folderlist ]; then
         cp $folderlistuser $folderlist
-        tslog "Cached the user list"
+        echo "Cached the user list" | $log
     elif [ "$2" ] && [ "$2" == "f" ]; then
         cp -f $folderlistuser $folderlist
-        tslog "Force-updated cached list"
+        echo "Force-updated cached list" | $log
     elif [ ! $folderlist -nt $folderlistuser ]; then
-        tslog "Difference found between cached and original user list"
-        cp -f $folderlistuser $folderlist
-        tslog "Updated cached list"
+        echo "Difference found between cached and original user list" | $log
+        cp -f $folderlistuser $folderlist | $log
+        echo "Updated cached list" | $log
     else
-        tslog "No update made to cached list"
+        echo "No update made to cached list" | $log
     fi
 
 # Reinit -------------------------------------------------
@@ -186,14 +208,14 @@ elif [ "$1" == "reinit" ]; then
 # Enable or disable --------------------------------------
 elif [ "$1" == "disable" ]; then
     touch $datadir/disable.txt
-    tslog "ts-binds automatic bind disabled"
+    echo "ts-binds automatic bind disabled" | $log
 elif [ "$1" == "enable" ]; then
     rm -f $datadir/disable.txt
-    tslog "ts-binds automatic bind enabled"
+    echo "ts-binds automatic bind enabled" | $log
 
 # Print log ----------------------------------------------
 elif [ "$1" == "log" ]; then
-    cat $logfile
+    cat $log
     echo
 
 # Print mount --------------------------------------------
@@ -211,9 +233,15 @@ elif [ "$1" == "pairs" ]; then
 
 # Action unrecognised ------------------------------------
 else
-    echo "E: Unknown action \"$1\" supplied"
+    echo "E: Unknown action \"$1\" supplied" | $log
 fi
 
 # Force log proper permission ----------------------------
-chown 1023:1023 $logfile $folderlistuser $folderlist
-chmod 0664 $logfile $folderlistuser $folderlist
+if [ $legacy == '1']; then
+    chown 1023:1023 $log $folderlistuser $folderlist
+    chmod 0664 $log $folderlistuser $folderlist
+fi
+
+# Handover default PATH ----------------------------------
+# in case somebody sourced this fakebin
+PATH=$oPATH
