@@ -23,7 +23,7 @@ until [ $sdstatus == "1" ]; do
 done
 
 # Execute ----------------------------------------------
-if [ ! -f /data/ts-binds/disable.txt ]; then
+if [ ! -f /data/ts-binds/disable ]; then
     tsbinds bind all
 else
     echo "OFF switch file (disable.txt) found. No changes are made." | $log
