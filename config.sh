@@ -119,6 +119,11 @@ check_for_legacyness() {
   fi
 }
 
+also_extract_LICENSE_and_README() {
+    cp -f $INSTALLER/README.md $MODPATH/
+    cp -f $INSTALLER/LICENSE $MODPATH/
+}
+
 print_onFinish() {
   ui_print " "
   ui_print "[i] Flashing is done!"
