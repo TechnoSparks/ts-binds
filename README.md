@@ -28,14 +28,18 @@ This saves space because the files **physically** reside on the external storage
 - Magisk < v17 is no longer supported due to template change
 
 **Additions**
-- ts-binds is now licensed with ... Unlicensed! Read LICENSE file for info
 - New binding algorithm to support sdcardfs!
+  - SDCardFS seems to rely on `/mnt/runtime` mountpoints. The key is to set the bind paths from there, but the binded mount needs to be remounted with proper `gid=9997` and `mask=6`, thus making legacy `/storage/emulated/0` play nice with the permission of the binded folder
+  - It is assumed that as of Oreo, SDCardFS implementation is already mature. Hopefully this algorithm persists for long!
 - Detection algorithm if legacy mode (for FUSE) should be applied on your device
   - Behaviour can be altered by using the new `legacy` parameter for tsbinds. Run `tsbinds help` in terminal for more info
+- ts-binds is now licensed with ... Unlicensed! Read LICENSE file for info
 
 **Modifications**
 - Update minmagisk to version 17.0
 - Rename `disable.txt` to `disable`
+- Streamlined logging
+- Code refactor
 
 ### 1.0.9
 **Additions**
