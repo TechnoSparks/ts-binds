@@ -15,7 +15,7 @@ This saves space because the files **physically** reside on the external storage
 - Not compatible when adoptable storage is used (logic error in script file, the module expects an SD card on boot)
 
 ## Links
-- [**More Info and Further Reading**](https://www.technosparks.net/pages/product-documentation/ts-binds?from=readme)
+- [**Further Reading**](https://www.technosparks.net/pages/product-documentation/ts-binds?from=readme)
 - [XDA Developers thread](https://forum.xda-developers.com/apps/magisk/module-ts-binds-t3628856)
 - [→ DOWNLOAD ZIP](https://github.com/Magisk-Modules-Repo/ts-binds/releases) (Also available in Magisk Repo)
 - [GitHub](https://github.com/Magisk-Modules-Repo/ts-binds/)
