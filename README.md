@@ -17,9 +17,9 @@ This saves space because the files **physically** reside on the external storage
 ## Links
 - [**Further Reading**](https://www.technosparks.net/pages/product-documentation/ts-binds?from=readme)
 - [XDA Developers thread](https://forum.xda-developers.com/apps/magisk/module-ts-binds-t3628856)
-- [→ DOWNLOAD ZIP](https://github.com/Magisk-Modules-Repo/ts-binds/releases) (Also available in Magisk Repo)
-- [GitHub](https://github.com/Magisk-Modules-Repo/ts-binds/)
-- [Changelogs](https://github.com/Magisk-Modules-Repo/ts-binds/releases)
+- [→ DOWNLOAD ZIP](https://github.com/TechnoSparks/ts-binds/releases) (Also available in Magisk Repo)
+- [GitHub](https://github.com/TechnoSparks/ts-binds/)
+- [Changelogs](https://github.com/TechnoSparks/ts-binds/releases)
 
 ## Changelog (2 recent versions)
 
