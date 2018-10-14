@@ -1,0 +1,293 @@
+#!/system/bin/sh
+# sy
+
+# All hail busybox for standardising this script!
+busybox=/sbin/.core/busybox
+oPATH=$PATH
+PATH=$busybox:$oPATH
+set -o pipefail
+
+# Check if run under root --------------------------------
+if ! ls /data > /dev/null 2> /dev/null; then
+    echo "[!] ERROR"
+    echo "    ts-binds needs to be invoked"
+    echo "    from an elevated shell."
+    echo "    Please run 'su' first."
+    echo
+    echo "Terminating.."
+    exit 1
+fi
+
+# Functions ----------------------------------------------
+MODDIR=/sbin/.core/img/ts-binds
+datadir=/data/ts-binds
+int=/mnt/runtime/default/emulated/0
+intr=/mnt/runtime/read/emulated/0
+intw=/mnt/runtime/write/emulated/0
+intraw=/data/media/0
+sdname=$(grep -m 1 "/mnt/media_rw/" /proc/mounts | grep -m 1 -Eo "[0-9A-Z]{4}-[0-9A-Z]{4}")
+sd=/mnt/runtime/default/$sdname
+legacy=0
+folderlist=$datadir/cached-folderlist.sh
+folderlistuser=$intraw/ts-binds-folderlist.txt
+logfile=$datadir/ts-binds.log
+logfileuser=$intraw/ts-binds.log
+log="tee -a $logfile"
+
+if [ -f $datadir/legacy ]; then
+    legacy=1
+    int=$intraw
+    sd=$(grep -m 1 -Eo "/mnt/media_rw/[0-9A-Z]{4}-[0-9A-Z]{4}" /proc/mounts)
+fi
+
+function supass {
+    /sbin/su -M -c "$@"
+}
+
+function gexit {
+    echo "Error occured here. Exiting" | $log
+    exit 1
+}
+
+function printhelp {
+    echo "tsbinds [options] [arg]"
+    echo
+    echo "Available options:"
+    echo
+    echo "help ............... Show this reference text"
+    echo "h .................. Ditto"
+    echo "pairs .............. Prints out the folder"
+    echo "                     pairs in folderlist"
+    echo "bind <bind name> ... Binds a specific entry"
+    echo "                     by its name"
+    echo "bind o <src> <des> . Binds <src> to <des>"
+    echo "bind all ........... Binds all entries "
+    echo "bind o <src> <des> . Binds <src> to <des>"
+    echo "unbind <bind name> . Unbinds a specific"
+    echo "                     entry by its name"
+    echo "unbind all ......... Unbinds all entries"
+    echo "unbind o <des> ..... Unbinds <des>"
+    echo "check <bind name> .. Check if an entry is binded"
+    echo "check all .......... Check if all entries are"
+    echo "                     individually binded"
+    echo "update ............. Update cached entries if"
+    echo "                     the user's entries are"
+    echo "                     modified"
+    echo "update f ........... Update cached entries"
+    echo "                     regardless if the user's"
+    echo "                     entries are modified"
+    echo "reinit ............. Re-run the script that"
+    echo "                     runs on boot"
+    echo "disable ............ Disables automatic "
+    echo "                     mounting on boot"
+    echo "enable ............. Enables automatic "
+    echo "                     mounting on boot"
+    echo "log ................ Prints out the log"
+    echo "mount .............. Prints out the mount"
+    echo "                     entries"
+    echo "legacy <option> .... Options: (on|off|default)"
+    echo "                     On forces FUSE"
+    echo "                     Off forces SDCardFS"
+    echo "                     Default means default"
+    echo
+
+    echo
+    echo "Note: running the command reinit, and unbind, move with \"all\" argument may return \"unmount\" errors. Most of the time they can be safely ignored."
+}
+
+# No action given ----------------------------------------
+if [ ! "$1" ]; then
+    echo "E: No action is declared!"
+    echo ''
+    printhelp
+
+# Print Help ---------------------------------------------
+elif [ "$1" == "help" ] || [ "$1" == "h" ]; then
+    printhelp
+
+# Bind ---------------------------------------------------
+elif [ "$1" == "bind" ]; then
+    function folderbind {
+        if supass mountpoint -q \"$3\"; then
+            echo "$1 is already binded" | $log
+        elif [ ! -d "$2" ] && [ ! -f "$2" ]; then
+            echo "Bind aborted: Folder '$2' as source doesn't exist!" | $log
+            exit 1
+        elif [ ! -d "$3" ] && [ ! -f "$3" ]; then
+            echo "Bind aborted: Folder '$3' as target doesn't exist!" | $log
+            exit 1
+        else
+            echo "Binding $1" | $log
+            if /sbin/su -M -c mount --rbind \"$2\" \"$3\" 2>> $logfile; then
+                intr="$(echo $3 | sed 's/default/read/g')"
+                intw="$(echo $3 | sed 's/default/write/g')"
+                if [ $legacy != "1" ]; then
+                    (supass mount -o remount,gid=9997,mask=6 \"$intr\") || gexit
+                    (supass mount -o remount,gid=9997,mask=6 \"$intw\") || gexit
+                fi
+                echo "Bind successful" | $log
+            else
+                echo "Bind failed" | $log
+            fi
+        fi
+    }
+    if [ ! "$2" ]; then
+        echo 'E: Bind name is not provided!' | $log
+    elif [ "$2" == "all" ]; then
+        echo "Binding all entries" | $log
+        source $folderlist
+        echo "All entries were processed" | $log
+    elif [ "$2" == "o" ]; then
+        folderbind "o" "$3" "$4"
+    elif line="$(grep -m 1 "$2" $folderlist)"; then
+        eval $line
+    else
+        echo "Unable to bind $2, entry not found in list!" | $log
+    fi
+
+# Unbind -------------------------------------------------
+elif [ "$1" == "unbind" ]; then
+    function folderbind {
+        if ! supass mountpoint -q \"$3\"; then
+            echo "$1 is already unbinded" | $log
+        else
+            echo "Unbinding $1" | $log
+            if supass umount \"$3\" 2>> $logfile
+                then echo "Unbind successful: $1" | $log
+                else echo "Unbind failed: $1" | $log;
+            fi
+        fi
+    }
+    if [ ! "$2" ]; then
+        echo 'E: Bind name is not provided!' | $log
+    elif [ "$2" == "all" ]; then
+        echo "Unbinding all entries" | $log
+        source $folderlist
+        echo "All entries were processed" | $log
+    elif [ "$2" == "o" ]; then
+        folderbind "o" "$3" "$4"
+    elif line="$(grep -m 1 "$2" $folderlist)"; then
+        eval $line
+    else
+        echo "Unable to unbind $2, entry not found in list!" | $log
+    fi
+
+# Check --------------------------------------------------
+elif [ "$1" == "check" ]; then
+    function folderbind {
+        if supass mountpoint -q \"$3\"
+            then echo "$1 is BINDED" | $log
+            else echo "$1 is NOT binded" | $log
+        fi
+    }
+    if [ ! "$2" ]; then
+        echo 'E: Bind name is not provided!' | $log
+    elif [ "$2" == "all" ]; then
+        source $folderlist
+        echo "All entries were checked" | $log
+    elif line="$(grep -m 1 "$2" $folderlist)"; then
+        eval $line
+    else
+        echo "Unable to check $2, entry not found in list!" | $log
+    fi
+
+# Update -------------------------------------------------
+elif [ "$1" == "update" ]; then
+    if [ ! -f $folderlistuser ]; then
+        cp $datadir/fresh-folderlist.txt $folderlistuser  2>> $logfile
+        echo "Copied user list to internal storage" | $log
+        tsbinds update
+    elif [ ! -f $folderlist ]; then
+        cp $folderlistuser $folderlist 2>> $logfile
+        echo "Cached the user list" | $log
+    elif [ "$2" ] && [ "$2" == "f" ]; then
+        cp -f $folderlistuser $folderlist 2>> $logfile
+        echo "Force-updated cached list" | $log
+    elif [ ! $folderlist -nt $folderlistuser ]; then
+        echo "Difference found between cached and original user list" | $log
+        cp -f $folderlistuser $folderlist 2>> $logfile
+        echo "Updated cached list" | $log
+    else
+        echo "No update made to cached list" | $log
+    fi
+
+# Reinit -------------------------------------------------
+elif [ "$1" == "reinit" ]; then
+    tsbinds unbind all
+    $MODDIR/service.sh
+
+# Enable or disable --------------------------------------
+elif [ "$1" == "disable" ]; then
+    if [ ! -f /data/ts-binds/disable ]; then
+        touch $datadir/disable
+        echo "ts-binds automatic bind disabled" | $log
+    else
+        echo "Already disabled!" | $log
+    fi
+elif [ "$1" == "enable" ]; then
+    if [ ! -f /data/ts-binds/disable ]; then
+        echo "Already enabled!" | $log
+    else
+        rm -f $datadir/disable 2>> $logfile
+        echo "ts-binds automatic bind enabled" | $log
+    fi
+
+# Print log ----------------------------------------------
+elif [ "$1" == "log" ]; then
+    cat $logfile
+    echo
+
+# Print mount --------------------------------------------
+elif [ "$1" == "mount" ]; then
+    supass mount
+    echo
+
+# Print folder pairs -------------------------------------
+elif [ "$1" == "pairs" ]; then
+    while IFS='' read -r line || [[ -n "$line" ]]; do
+        if ! (echo $line | grep -Eo "#\| +" > /dev/null 2> /dev/null); then
+            echo $line | awk '{print $2}'
+        fi
+    done < $folderlist
+
+# Force enable/disable legacy ----------------------------
+elif [ "$1" == "legacy" ]; then
+    if [ ! "$2" ]; then
+        echo "You need to decide if legacy on or legacy off!"
+        echo "tsbinds legacy on      :: to force on (FUSE)"
+        echo "tsbinds legacy off     :: to force off (SDCardFS)"
+        echo "tsbinds legacy default :: to fallback to default"
+    elif [ "$2" == "off" ]; then
+        echo "Forcing SDCardFS" | $log
+        if [ -f $datadir/legacy ]; then rm -f $datadir/legacy; fi
+        echo "resetprop -p ro.sys.sdcardfs true" > $MODDIR/post-fs-data.sh
+        echo "resetprop -p persist.sys.sdcardfs force_on" >> $MODDIR/post-fs-data.sh
+        echo "resetprop -p persist.fuse_sdcard false" >> $MODDIR/post-fs-data.sh
+    elif [ "$2" == "on" ]; then
+        echo "Forcing FUSE" | $log
+        if [ ! -f $datadir/legacy ]; then touch $datadir/legacy; fi
+        echo "resetprop -p ro.sys.sdcardfs false" > $MODDIR/post-fs-data.sh
+        echo "resetprop -p persist.sys.sdcardfs force_off" >> $MODDIR/post-fs-data.sh
+        echo "resetprop -p persist.fuse_sdcard true" >> $MODDIR/post-fs-data.sh
+    elif [ "$2" == "default" ]; then
+        echo "Setting Default" | $log
+        if [ -f $datadir/legacy-device ] && [ ! -f $datadir/legacy ]; then touch $datadir/legacy; fi
+        if [ -f $MODDIR/post-fs-data.sh ]; then rm -f $MODDIR/post-fs-data.sh; fi
+    else
+        echo "Unknown parameter: ${2}!" | $log
+    fi
+
+# Action unrecognised ------------------------------------
+else
+    echo "E: Unknown action \"$1\" supplied" | $log
+fi
+
+# Force log proper permission ----------------------------
+cp -f $logfile $logfileuser
+chown 1023:1023 $logfileuser $folderlistuser $folderlist
+chmod 0664 $logfileuser $folderlistuser $folderlist
+
+# Handover default PATH ----------------------------------
+# in case somebody sourced this fakebin
+PATH=$oPATH
+set +o pipefail
