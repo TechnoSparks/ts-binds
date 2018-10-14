@@ -274,7 +274,7 @@ elif [ "$1" == "legacy" ]; then
         if [ -f $datadir/legacy-device ] && [ ! -f $datadir/legacy ]; then touch $datadir/legacy; fi
         if [ -f $MODDIR/post-fs-data.sh ]; then rm -f $MODDIR/post-fs-data.sh; fi
     else
-        echo "Unknown parameter: ${$2}!" | $log
+        echo "Unknown parameter: ${2}!" | $log
     fi
 
 # Action unrecognised ------------------------------------
