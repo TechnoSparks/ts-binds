@@ -4,7 +4,7 @@
 # Functions ----------------------------------------------
 MODDIR=${0%/*}
 sdstatus=0
-logfile=/data/ts-binds/ts-binds.log
+logfile=$MODDIR/data/ts-binds.log
 logfileuser=/data/media/0/ts-binds.log
 log="tee -a $logfile"
 echo -e "Log initialised at: $(date) \n\n" > $logfile
@@ -24,8 +24,8 @@ until [ $sdstatus == "1" ]; do
 done
 
 # Execute ----------------------------------------------
-if [ ! -f /data/ts-binds/disable ]; then
-    tsbinds bind all
+if [ ! -f $MODDIR/data/disable ]; then
+    tsbinds bind all >> $logfile 2>> $logfile
 else
     echo "OFF switch file (disable.txt) found. No changes are made." | $log
 fi
