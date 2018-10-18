@@ -116,7 +116,7 @@ elif [ "$1" == "bind" ]; then
             exit 1
         else
             echo "Binding $1" | $log
-            if /sbin/su -M -c mount --rbind \""$2"\" \""$3"\" 2>> $logfile; then
+            if supass mount --rbind \""$2"\" \""$3"\" 2>> $logfile; then
                 if [ $legacy != "1" ]; then
                     intr="$(echo $3 | sed 's/default/read/g')"
                     intw="$(echo $3 | sed 's/default/write/g')"
