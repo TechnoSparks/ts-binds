@@ -35,7 +35,7 @@ log="tee -a $logfile"
 if [ -f $datadir/legacy ]; then
     legacy=1
     int=$intraw
-    sd=$(grep -m 1 -Eo "/mnt/media_rw/[0-9A-Z]{4}-[0-9A-Z]{4}" /proc/mounts)
+    sd=/mnt/media_rw/$sdname
 fi
 
 function supass {
