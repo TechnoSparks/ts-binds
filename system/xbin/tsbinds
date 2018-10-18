@@ -22,8 +22,6 @@ fi
 MODDIR=/sbin/.core/img/ts-binds
 datadir=$MODDIR/data
 int=/mnt/runtime/default/emulated/0
-intr=/mnt/runtime/read/emulated/0
-intw=/mnt/runtime/write/emulated/0
 intraw=/data/media/0
 sdname=$(grep -m 1 "/mnt/media_rw/" /proc/mounts | grep -m 1 -Eo "[0-9A-Z]{4}-[0-9A-Z]{4}")
 sd=/mnt/runtime/default/$sdname
@@ -119,9 +117,9 @@ elif [ "$1" == "bind" ]; then
         else
             echo "Binding $1" | $log
             if /sbin/su -M -c mount --rbind \""$2"\" \""$3"\" 2>> $logfile; then
-                intr="$(echo $3 | sed 's/default/read/g')"
-                intw="$(echo $3 | sed 's/default/write/g')"
                 if [ $legacy != "1" ]; then
+                    intr="$(echo $3 | sed 's/default/read/g')"
+                    intw="$(echo $3 | sed 's/default/write/g')"
                     (supass mount -o remount,gid=9997,mask=6 \""$intr"\") || gexit
                     (supass mount -o remount,gid=9997,mask=6 \""$intw"\") || gexit
                 fi
