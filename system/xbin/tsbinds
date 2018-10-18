@@ -121,6 +121,7 @@ elif [ "$1" == "bind" ]; then
                 echo "Bind successful"
             else
                 echo "Bind failed"
+                exit 1
             fi
         fi
     }
@@ -147,7 +148,7 @@ elif [ "$1" == "unbind" ]; then
             echo "Unbinding $1"
             if supass umount \""$3"\"
                 then echo "Unbind successful: $1"
-                else echo "Unbind failed: $1";
+                else echo "Unbind failed: $1"; exit 1
             fi
         fi
     }
