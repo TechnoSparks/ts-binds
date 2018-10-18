@@ -104,18 +104,13 @@ set_permissions() {
 # difficult for you to migrate your modules to newer template versions.
 # Make update-binary as clean as possible, try to only do function calls in it.
 
-set_data() {
-  ui_print "- Copying over data folder"
-  if [ ! -d /data/ts-binds ]; then
-    mv $MODPATH/data /data/ts-binds
-  fi
-}
-
 check_for_legacyness() {
   if ! grep -q "sdcardfs" /proc/mounts; then
     ui_print "- Is FUSE. ts-binds will work on legacy mode"
-    touch /data/ts-binds/legacy
-    touch /data/ts-binds/legacy-device
+    touch $MODPATH/data/legacy
+    touch $MODPATH/data/legacy-device
+  else
+    ui_print "- Is SDCardFS. ts-binds will work on default mode"
   fi
 }
 

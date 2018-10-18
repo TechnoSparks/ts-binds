@@ -20,7 +20,7 @@ fi
 
 # Functions ----------------------------------------------
 MODDIR=/sbin/.core/img/ts-binds
-datadir=/data/ts-binds
+datadir=$MODDIR/data
 int=/mnt/runtime/default/emulated/0
 intr=/mnt/runtime/read/emulated/0
 intw=/mnt/runtime/write/emulated/0
@@ -108,7 +108,7 @@ elif [ "$1" == "help" ] || [ "$1" == "h" ]; then
 # Bind ---------------------------------------------------
 elif [ "$1" == "bind" ]; then
     function folderbind {
-        if supass mountpoint -q \"$3\"; then
+        if supass mountpoint -q \""$3"\"; then
             echo "$1 is already binded" | $log
         elif [ ! -d "$2" ] && [ ! -f "$2" ]; then
             echo "Bind aborted: Folder '$2' as source doesn't exist!" | $log
@@ -118,12 +118,12 @@ elif [ "$1" == "bind" ]; then
             exit 1
         else
             echo "Binding $1" | $log
-            if /sbin/su -M -c mount --rbind \"$2\" \"$3\" 2>> $logfile; then
+            if /sbin/su -M -c mount --rbind \""$2"\" \""$3"\" 2>> $logfile; then
                 intr="$(echo $3 | sed 's/default/read/g')"
                 intw="$(echo $3 | sed 's/default/write/g')"
                 if [ $legacy != "1" ]; then
-                    (supass mount -o remount,gid=9997,mask=6 \"$intr\") || gexit
-                    (supass mount -o remount,gid=9997,mask=6 \"$intw\") || gexit
+                    (supass mount -o remount,gid=9997,mask=6 \""$intr"\") || gexit
+                    (supass mount -o remount,gid=9997,mask=6 \""$intw"\") || gexit
                 fi
                 echo "Bind successful" | $log
             else
@@ -148,11 +148,11 @@ elif [ "$1" == "bind" ]; then
 # Unbind -------------------------------------------------
 elif [ "$1" == "unbind" ]; then
     function folderbind {
-        if ! supass mountpoint -q \"$3\"; then
+        if ! supass mountpoint -q \""$3"\"; then
             echo "$1 is already unbinded" | $log
         else
             echo "Unbinding $1" | $log
-            if supass umount \"$3\" 2>> $logfile
+            if supass umount \""$3"\" 2>> $logfile
                 then echo "Unbind successful: $1" | $log
                 else echo "Unbind failed: $1" | $log;
             fi
@@ -175,7 +175,7 @@ elif [ "$1" == "unbind" ]; then
 # Check --------------------------------------------------
 elif [ "$1" == "check" ]; then
     function folderbind {
-        if supass mountpoint -q \"$3\"
+        if supass mountpoint -q \""$3"\"
             then echo "$1 is BINDED" | $log
             else echo "$1 is NOT binded" | $log
         fi
@@ -218,14 +218,14 @@ elif [ "$1" == "reinit" ]; then
 
 # Enable or disable --------------------------------------
 elif [ "$1" == "disable" ]; then
-    if [ ! -f /data/ts-binds/disable ]; then
+    if [ ! -f $datadir/disable ]; then
         touch $datadir/disable
         echo "ts-binds automatic bind disabled" | $log
     else
         echo "Already disabled!" | $log
     fi
 elif [ "$1" == "enable" ]; then
-    if [ ! -f /data/ts-binds/disable ]; then
+    if [ ! -f $datadir/disable ]; then
         echo "Already enabled!" | $log
     else
         rm -f $datadir/disable 2>> $logfile
