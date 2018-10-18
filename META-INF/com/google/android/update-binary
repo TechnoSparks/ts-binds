@@ -133,9 +133,8 @@ $POSTFSDATA && cp -af $INSTALLER/common/post-fs-data.sh $MODPATH/post-fs-data.sh
 $LATESTARTSERVICE && cp -af $INSTALLER/common/service.sh $MODPATH/service.sh
 
 ui_print "- Setting permissions"
-also_extract_LICENSE_and_README
 set_permissions
-set_data
+also_extract_LICENSE_and_README
 check_for_legacyness
 
 ##########################################################################################
