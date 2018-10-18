@@ -38,7 +38,9 @@ This saves space because the files **physically** reside on the external storage
 **Modifications**
 - Update minmagisk to version 17.0
 - Rename `disable.txt` to `disable`
-- Streamlined logging
+- No longer output to log file. Parent process needs to manually pipe to a file
+  - `service.sh` calls `tsbinds bind all` piped to the logfile in internal storage
+  - This means that the log only represent the automated process of bind mounting when the system boots.
 - Code refactor
 
 ### 1.0.9
