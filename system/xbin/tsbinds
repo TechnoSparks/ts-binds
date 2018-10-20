@@ -20,7 +20,7 @@ fi
 
 # Functions ----------------------------------------------
 MODDIR=/sbin/.core/img/ts-binds
-datadir=$MODDIR/data
+datadir=/data/ts-binds
 int=/mnt/runtime/default/emulated/0
 intraw=/data/media/0
 sdname=$(grep -m 1 "/mnt/media_rw/" /proc/mounts | grep -m 1 -Eo "[0-9A-Z]{4}-[0-9A-Z]{4}")
@@ -184,7 +184,11 @@ elif [ "$1" == "check" ]; then
 
 # Update -------------------------------------------------
 elif [ "$1" == "update" ]; then
-    if [ ! -f $folderlistuser ]; then
+    if [ ! -d $datadir ]; then
+        cp -R $MODDIR/data $data
+        echo "Copied data folder to /data"
+        tsbinds update
+    elif [ ! -f $folderlistuser ]; then
         cp $datadir/fresh-folderlist.txt $folderlistuser
         echo "Copied user list to internal storage"
         chown 1023:1023 $folderlistuser
@@ -269,6 +273,11 @@ elif [ "$1" == "legacy" ]; then
     else
         echo "Unknown parameter: ${2}!"
     fi
+
+# Reset configs ------------------------------------------
+elif [ "$1" == "reset" ]; then
+    rm -Rf $datadir
+    tsbinds update
 
 # Action unrecognised ------------------------------------
 else

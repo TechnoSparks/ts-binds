@@ -3,6 +3,7 @@
 
 # Functions ----------------------------------------------
 MODDIR=${0%/*}
+datadir=/data/ts-binds
 sdstatus=0
 logfile=$MODDIR/data/ts-binds.log
 logfileuser=/data/media/0/ts-binds.log
@@ -23,7 +24,7 @@ until [ $sdstatus == "1" ]; do
 done
 
 # Execute ----------------------------------------------
-if [ ! -f $MODDIR/data/disable ]; then
+if [ ! -f $datadir/disable ]; then
     tsbinds bind all >> $logfile 2>> $logfile
 else
     echo "OFF switch file (disable) found. No changes are made." | $log
