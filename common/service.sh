@@ -27,11 +27,11 @@ done
 if [ ! -f $MODDIR/data/disable ]; then
     tsbinds bind all >> $logfile 2>> $logfile
 else
-    echo "OFF switch file (disable.txt) found. No changes are made." | $log
+    echo "OFF switch file (disable) found. No changes are made." | $log
 fi
 
 # End bind ---------------------------------------------
 echo "Script execution completed" | $log
 cp -f $logfile $logfileuser
-chown 1023:1023 $logfileuser $folderlistuser $folderlist
-chmod 0664 $logfileuser $folderlistuser $folderlist
+chown 1023:1023 $logfileuser
+chmod 0664 $logfileuser
