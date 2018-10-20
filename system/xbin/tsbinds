@@ -28,9 +28,6 @@ sd=/mnt/runtime/default/$sdname
 legacy=0
 folderlist=$datadir/cached-folderlist.sh
 folderlistuser=$intraw/ts-binds-folderlist.txt
-logfile=$datadir/ts-binds.log
-logfileuser=$intraw/ts-binds.log
-log="tee -a $logfile"
 
 if [ -f $datadir/legacy ]; then
     legacy=1
@@ -190,6 +187,8 @@ elif [ "$1" == "update" ]; then
     if [ ! -f $folderlistuser ]; then
         cp $datadir/fresh-folderlist.txt $folderlistuser
         echo "Copied user list to internal storage"
+        chown 1023:1023 $folderlistuser
+        chmod 0664 $folderlistuser
         tsbinds update
     elif [ ! -f $folderlist ]; then
         cp $folderlistuser $folderlist
@@ -275,11 +274,6 @@ elif [ "$1" == "legacy" ]; then
 else
     echo "E: Unknown action \"$1\" supplied"
 fi
-
-# Force log proper permission ----------------------------
-cp -f $logfile $logfileuser
-chown 1023:1023 $logfileuser $folderlistuser $folderlist
-chmod 0664 $logfileuser $folderlistuser $folderlist
 
 # Handover default PATH ----------------------------------
 # in case somebody sourced this fakebin
