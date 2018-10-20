@@ -14,12 +14,19 @@ echo -e "Log initialised at: $(date) \n\n" > $logfile
 tsbinds update >> $logfile 2>> $logfile
 
 # Barrier, do not continue until SD card is mounted ----
+i=0
 until [ $sdstatus == "1" ]; do
     if sdname=$(grep -m 1 "/mnt/media_rw/" /proc/mounts | grep -m 1 -Eo "[0-9A-Z]{4}-[0-9A-Z]{4}"); then
         sdstatus=1
         echo "sdcard $sdname mounted" | $log
     else
-        sleep 3
+        i=$(expr $i + 1)
+        if [ $i -eq 20 ]; then
+            echo "20 retries (total of 60 seconds) but SD Card do not found. No changes are made."
+            break;
+        else
+            sleep 3
+        fi
     fi
 done
 
