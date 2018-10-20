@@ -72,13 +72,10 @@ function printhelp {
     echo "                     mounting on boot"
     echo "enable ............. Enables automatic "
     echo "                     mounting on boot"
-    echo "log ................ Prints out the log"
-    echo "mount .............. Prints out the mount"
-    echo "                     entries"
-    echo "legacy <option> .... Options: (on|off|default)"
-    echo "                     On forces FUSE"
-    echo "                     Off forces SDCardFS"
-    echo "                     Default means default"
+    echo "mode <option> ...... Options:"
+    echo "                     'default' uses SDCardFS"
+    echo "                     'legacy'  uses FUSE"
+    echo "                     'device'  uses device default"
     echo
 
     echo
@@ -229,16 +226,6 @@ elif [ "$1" == "enable" ]; then
         echo "ts-binds automatic bind enabled"
     fi
 
-# Print log ----------------------------------------------
-elif [ "$1" == "log" ]; then
-    cat $logfile
-    echo
-
-# Print mount --------------------------------------------
-elif [ "$1" == "mount" ]; then
-    supass mount
-    echo
-
 # Print folder pairs -------------------------------------
 elif [ "$1" == "pairs" ]; then
     while IFS='' read -r line || [[ -n "$line" ]]; do
@@ -247,35 +234,36 @@ elif [ "$1" == "pairs" ]; then
         fi
     done < $folderlist
 
-# Force enable/disable legacy ----------------------------
-elif [ "$1" == "legacy" ]; then
+# Force change binding mode ------------------------------
+elif [ "$1" == "mode" ]; then
     if [ ! "$2" ]; then
         echo "You need to decide if legacy on or legacy off!"
-        echo "tsbinds legacy on      :: to force on (FUSE)"
-        echo "tsbinds legacy off     :: to force off (SDCardFS)"
-        echo "tsbinds legacy default :: to fallback to default"
-    elif [ "$2" == "off" ]; then
+        echo "tsbinds mode legacy      :: to force on (FUSE)"
+        echo "tsbinds mode default     :: to force off (SDCardFS)"
+        echo "tsbinds mode device      :: to fallback to device default"
+    elif [ "$2" == "default" ]; then
         echo "Forcing SDCardFS"
         if [ -f $datadir/legacy ]; then rm -f $datadir/legacy; fi
-        echo "resetprop -p ro.sys.sdcardfs true" > $MODDIR/post-fs-data.sh
-        echo "resetprop -p persist.sys.sdcardfs force_on" >> $MODDIR/post-fs-data.sh
-        echo "resetprop -p persist.fuse_sdcard false" >> $MODDIR/post-fs-data.sh
-    elif [ "$2" == "on" ]; then
+        echo "ro.sys.sdcardfs=true" > $MODDIR/system.prop
+        echo "persist.sys.sdcardfs=force_on" >> $MODDIR/system.prop
+        echo "persist.fuse_sdcard=false" >> $MODDIR/system.prop
+    elif [ "$2" == "legacy" ]; then
         echo "Forcing FUSE"
         if [ ! -f $datadir/legacy ]; then touch $datadir/legacy; fi
-        echo "resetprop -p ro.sys.sdcardfs false" > $MODDIR/post-fs-data.sh
-        echo "resetprop -p persist.sys.sdcardfs force_off" >> $MODDIR/post-fs-data.sh
-        echo "resetprop -p persist.fuse_sdcard true" >> $MODDIR/post-fs-data.sh
-    elif [ "$2" == "default" ]; then
+        echo "ro.sys.sdcardfs=false" > $MODDIR/system.prop
+        echo "persist.sys.sdcardfs=force_off" >> $MODDIR/system.prop
+        echo "persist.fuse_sdcard=true" >> $MODDIR/system.prop
+    elif [ "$2" == "device" ]; then
         echo "Setting Default"
         if [ -f $datadir/legacy-device ] && [ ! -f $datadir/legacy ]; then touch $datadir/legacy; fi
-        if [ -f $MODDIR/post-fs-data.sh ]; then rm -f $MODDIR/post-fs-data.sh; fi
+        if [ -f $MODDIR/system.prop ]; then rm -f $MODDIR/system.prop; fi
     else
         echo "Unknown parameter: ${2}!"
     fi
 
 # Reset configs ------------------------------------------
 elif [ "$1" == "reset" ]; then
+    echo "Purging data folder"
     rm -Rf $datadir
     tsbinds update
 
