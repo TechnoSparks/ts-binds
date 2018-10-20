@@ -110,8 +110,8 @@ elif [ "$1" == "bind" ]; then
             echo "Binding $1"
             if supass mount --rbind \""$2"\" \""$3"\"; then
                 if [ $legacy != "1" ]; then
-                    intr="$(echo $3 | sed 's/default/read/g')"
-                    intw="$(echo $3 | sed 's/default/write/g')"
+                    intr="$(echo $3 | sed 's/\/mnt\/runtime\/default/\/mnt\/runtime\/read/g')"
+                    intw="$(echo $3 | sed 's/\/mnt\/runtime\/default/\/mnt\/runtime\/write/g')"
                     (supass mount -o remount,gid=9997,mask=6 \""$intr"\") || exit 1
                     (supass mount -o remount,gid=9997,mask=6 \""$intw"\") || exit 1
                 fi

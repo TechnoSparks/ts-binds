@@ -25,10 +25,10 @@ This saves space because the files **physically** reside on the external storage
 
 ### 1.1
 **Upgrade Notes**
-Please delete `/data/ts-binds`. It is now a residual left over from 1.0.9. 1.1 now uses Magisk's own image to store configurations
+Please delete `/data/ts-binds`. It is now a residual leftover from 1.0.9. 1.1 now uses Magisk's own image to store configurations
 
 **Regressions**
-- Magisk < v17 is no longer supported due to template change
+- Magisk version <17 is no longer supported due to template change
 
 **Additions**
 - New binding algorithm to support sdcardfs!
