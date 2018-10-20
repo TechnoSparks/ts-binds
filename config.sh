@@ -40,12 +40,12 @@ LATESTARTSERVICE=true
 # Set what you want to show when installing your mod
 
 print_modname() {
-  ui_print "================================================"
-  ui_print " ts-binds Magisk Module"
-  ui_print "================================================"
-  ui_print "Module proudly made by TechnoSparks"
-  ui_print "Powered by Magisk (@topjohnwu)"
-  ui_print " "
+    ui_print "================================================"
+    ui_print " ts-binds Magisk Module"
+    ui_print "================================================"
+    ui_print "Module proudly made by TechnoSparks"
+    ui_print "Powered by Magisk (@topjohnwu)"
+    ui_print " "
 }
 
 ##########################################################################################
@@ -73,25 +73,25 @@ REPLACE="
 ##########################################################################################
 
 set_permissions() {
-  # Only some special files require specific permissions
-  # The default permissions should be good enough for most cases
+    # Only some special files require specific permissions
+    # The default permissions should be good enough for most cases
 
-  # Here are some examples for the set_perm functions:
+    # Here are some examples for the set_perm functions:
 
-  # set_perm_recursive  <dirname>                <owner> <group> <dirpermission> <filepermission> <contexts> (default: u:object_r:system_file:s0)
-  # set_perm_recursive  $MODPATH/system/lib       0       0       0755            0644
+    # set_perm_recursive  <dirname>                <owner> <group> <dirpermission> <filepermission> <contexts> (default: u:object_r:system_file:s0)
+    # set_perm_recursive  $MODPATH/system/lib       0       0       0755            0644
 
-  # set_perm  <filename>                         <owner> <group> <permission> <contexts> (default: u:object_r:system_file:s0)
-  # set_perm  $MODPATH/system/bin/app_process32   0       2000    0755         u:object_r:zygote_exec:s0
-  # set_perm  $MODPATH/system/bin/dex2oat         0       2000    0755         u:object_r:dex2oat_exec:s0
-  # set_perm  $MODPATH/system/lib/libart.so       0       0       0644
+    # set_perm  <filename>                         <owner> <group> <permission> <contexts> (default: u:object_r:system_file:s0)
+    # set_perm  $MODPATH/system/bin/app_process32   0       2000    0755         u:object_r:zygote_exec:s0
+    # set_perm  $MODPATH/system/bin/dex2oat         0       2000    0755         u:object_r:dex2oat_exec:s0
+    # set_perm  $MODPATH/system/lib/libart.so       0       0       0644
 
-  # The following is default permissions, DO NOT remove
-  set_perm_recursive  $MODPATH                         0    0  0755  0644
-  set_perm $MODPATH/service.sh                         0    0  0755
-  set_perm $MODPATH/system/xbin/tsbinds                0    0  0755
-  set_perm $MODPATH/data/fresh-folderlist.txt       1023 1023  0664
-  set_perm $MODPATH/data/config.txt                    0    0  0666
+    # The following is default permissions, DO NOT remove
+    set_perm_recursive  $MODPATH                         0    0  0755  0644
+    set_perm $MODPATH/service.sh                         0    0  0755
+    set_perm $MODPATH/system/xbin/tsbinds                0    0  0755
+    set_perm $MODPATH/data/fresh-folderlist.txt       1023 1023  0664
+    set_perm $MODPATH/data/config                        0    0  0666
 }
 
 ##########################################################################################
@@ -105,22 +105,28 @@ set_permissions() {
 # Make update-binary as clean as possible, try to only do function calls in it.
 
 check_for_legacyness() {
-  if ! grep -q "sdcardfs" /proc/mounts; then
-    ui_print "- Is FUSE. ts-binds will work on legacy mode"
-    touch $MODPATH/data/legacy
-    touch $MODPATH/data/legacy-device
-  else
-    ui_print "- Is SDCardFS. ts-binds will work on default mode"
-  fi
+    if ! grep -q "sdcardfs" /proc/mounts; then
+        ui_print "- Is FUSE. ts-binds will work on legacy mode"
+        touch $MODPATH/data/legacy
+        touch $MODPATH/data/legacy-device
+    else
+        ui_print "- Is SDCardFS."
+    fi
 }
 
-also_extract_LICENSE_and_README() {
-    cp -f $INSTALLER/README.md $MODPATH/
-    cp -f $INSTALLER/LICENSE $MODPATH/
+extract_data_folder() {
+    if [ ! -d $MODPATH/data ]; then
+        ui_print "- Data folder not found, extracting"
+        unzip -o "$ZIP" 'data/*' -d $MODPATH >&2
+    fi
+}
+
+extract_LICENSE_and_README() {
+    unzip -o "$ZIP" README.md LICENSE -d $MODPATH >&2
 }
 
 print_onFinish() {
-  ui_print " "
-  ui_print "[i] Flashing is done!"
-  ui_print "------------------------------------------------"
+    ui_print " "
+    ui_print "[i] Flashing is done!"
+    ui_print "------------------------------------------------"
 }
