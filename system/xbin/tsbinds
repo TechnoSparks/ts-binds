@@ -35,11 +35,11 @@ if [ -f $datadir/legacy ]; then
     sd=/mnt/media_rw/$sdname
 fi
 
-function supass {
+supass() {
     /sbin/su -M -c "$@"
 }
 
-function printhelp {
+printhelp() {
     echo "tsbinds [options] [arg]"
     echo
     echo "Available options:"
@@ -89,12 +89,12 @@ if [ ! "$1" ]; then
     printhelp
 
 # Print Help ---------------------------------------------
-elif [ "$1" == "help" ] || [ "$1" == "h" ]; then
+elif [ "$1" = "help" ] || [ "$1" = "h" ]; then
     printhelp
 
 # Bind ---------------------------------------------------
-elif [ "$1" == "bind" ]; then
-    function folderbind {
+elif [ "$1" = "bind" ]; then
+    folderbind() {
         if supass mountpoint -q \""$3"\"; then
             echo "$1 is already binded"
         elif [ ! -d "$2" ] && [ ! -f "$2" ]; then
@@ -107,8 +107,8 @@ elif [ "$1" == "bind" ]; then
             echo "Binding $1"
             if supass mount --rbind \""$2"\" \""$3"\"; then
                 if [ $legacy != "1" ]; then
-                    intr="$(echo $3 | sed 's/\/mnt\/runtime\/default/\/mnt\/runtime\/read/g')"
-                    intw="$(echo $3 | sed 's/\/mnt\/runtime\/default/\/mnt\/runtime\/write/g')"
+                    intr="$(echo "$3" | sed 's/\/mnt\/runtime\/default/\/mnt\/runtime\/read/g')"
+                    intw="$(echo "$3" | sed 's/\/mnt\/runtime\/default/\/mnt\/runtime\/write/g')"
                     (supass mount -o remount,gid=9997,mask=6 \""$intr"\") || exit 1
                     (supass mount -o remount,gid=9997,mask=6 \""$intw"\") || exit 1
                 fi
@@ -121,21 +121,21 @@ elif [ "$1" == "bind" ]; then
     }
     if [ ! "$2" ]; then
         echo 'E: Bind name is not provided!'
-    elif [ "$2" == "all" ]; then
+    elif [ "$2" = "all" ]; then
         echo "Binding all entries"
-        source $folderlist
+        . $folderlist
         echo "All entries were processed"
-    elif [ "$2" == "o" ]; then
+    elif [ "$2" = "o" ]; then
         folderbind "o" "$3" "$4"
     elif line="$(grep -m 1 "$2" $folderlist)"; then
-        eval $line
+        eval "$line"
     else
         echo "Unable to bind $2, entry not found in list!"
     fi
 
 # Unbind -------------------------------------------------
-elif [ "$1" == "unbind" ]; then
-    function folderbind {
+elif [ "$1" = "unbind" ]; then
+    folderbind() {
         if ! supass mountpoint -q \""$3"\"; then
             echo "$1 is already unbinded"
         else
@@ -148,21 +148,21 @@ elif [ "$1" == "unbind" ]; then
     }
     if [ ! "$2" ]; then
         echo 'E: Bind name is not provided!'
-    elif [ "$2" == "all" ]; then
+    elif [ "$2" = "all" ]; then
         echo "Unbinding all entries"
-        source $folderlist
+        . $folderlist
         echo "All entries were processed"
-    elif [ "$2" == "o" ]; then
+    elif [ "$2" = "o" ]; then
         folderbind "o" "$3" "$4"
     elif line="$(grep -m 1 "$2" $folderlist)"; then
-        eval $line
+        eval "$line"
     else
         echo "Unable to unbind $2, entry not found in list!"
     fi
 
 # Check --------------------------------------------------
-elif [ "$1" == "check" ]; then
-    function folderbind {
+elif [ "$1" = "check" ]; then
+    folderbind() {
         if supass mountpoint -q \""$3"\"
             then echo "$1 is BINDED"
             else echo "$1 is NOT binded"
@@ -170,19 +170,19 @@ elif [ "$1" == "check" ]; then
     }
     if [ ! "$2" ]; then
         echo 'E: Bind name is not provided!'
-    elif [ "$2" == "all" ]; then
-        source $folderlist
+    elif [ "$2" = "all" ]; then
+        . $folderlist
         echo "All entries were checked"
     elif line="$(grep -m 1 "$2" $folderlist)"; then
-        eval $line
+        eval "$line"
     else
         echo "Unable to check $2, entry not found in list!"
     fi
 
 # Update -------------------------------------------------
-elif [ "$1" == "update" ]; then
+elif [ "$1" = "update" ]; then
     if [ ! -d $datadir ]; then
-        cp -R $MODDIR/data $data
+        cp -R $MODDIR/data $datadir
         echo "Copied data folder to /data"
         tsbinds update
     elif [ ! -f $folderlistuser ]; then
@@ -194,7 +194,7 @@ elif [ "$1" == "update" ]; then
     elif [ ! -f $folderlist ]; then
         cp $folderlistuser $folderlist
         echo "Cached the user list"
-    elif [ "$2" ] && [ "$2" == "f" ]; then
+    elif [ "$2" ] && [ "$2" = "f" ]; then
         cp -f $folderlistuser $folderlist
         echo "Force-updated cached list"
     elif [ ! $folderlist -nt $folderlistuser ]; then
@@ -206,19 +206,19 @@ elif [ "$1" == "update" ]; then
     fi
 
 # Reinit -------------------------------------------------
-elif [ "$1" == "reinit" ]; then
+elif [ "$1" = "reinit" ]; then
     tsbinds unbind all
     $MODDIR/service.sh
 
 # Enable or disable --------------------------------------
-elif [ "$1" == "disable" ]; then
+elif [ "$1" = "disable" ]; then
     if [ ! -f $datadir/disable ]; then
         touch $datadir/disable
         echo "ts-binds automatic bind disabled"
     else
         echo "Already disabled!"
     fi
-elif [ "$1" == "enable" ]; then
+elif [ "$1" = "enable" ]; then
     if [ ! -f $datadir/disable ]; then
         echo "Already enabled!"
     else
@@ -227,33 +227,33 @@ elif [ "$1" == "enable" ]; then
     fi
 
 # Print folder pairs -------------------------------------
-elif [ "$1" == "pairs" ]; then
+elif [ "$1" = "pairs" ]; then
     while IFS='' read -r line || [[ -n "$line" ]]; do
-        if ! (echo $line | grep -Eo "#\| +" > /dev/null 2> /dev/null); then
-            echo $line | awk '{print $2}'
+        if ! (echo "$line" | grep -Eo "#\| +" > /dev/null 2> /dev/null); then
+            echo "$line" | awk '{print $2}'
         fi
     done < $folderlist
 
 # Force change binding mode ------------------------------
-elif [ "$1" == "mode" ]; then
+elif [ "$1" = "mode" ]; then
     if [ ! "$2" ]; then
         echo "You need to decide if legacy on or legacy off!"
         echo "tsbinds mode legacy      :: to force on (FUSE)"
         echo "tsbinds mode default     :: to force off (SDCardFS)"
         echo "tsbinds mode device      :: to fallback to device default"
-    elif [ "$2" == "default" ]; then
+    elif [ "$2" = "default" ]; then
         echo "Forcing SDCardFS"
         if [ -f $datadir/legacy ]; then rm -f $datadir/legacy; fi
         echo "ro.sys.sdcardfs=true" > $MODDIR/system.prop
         echo "persist.sys.sdcardfs=force_on" >> $MODDIR/system.prop
         echo "persist.fuse_sdcard=false" >> $MODDIR/system.prop
-    elif [ "$2" == "legacy" ]; then
+    elif [ "$2" = "legacy" ]; then
         echo "Forcing FUSE"
         if [ ! -f $datadir/legacy ]; then touch $datadir/legacy; fi
         echo "ro.sys.sdcardfs=false" > $MODDIR/system.prop
         echo "persist.sys.sdcardfs=force_off" >> $MODDIR/system.prop
         echo "persist.fuse_sdcard=true" >> $MODDIR/system.prop
-    elif [ "$2" == "device" ]; then
+    elif [ "$2" = "device" ]; then
         echo "Setting Default"
         if [ -f $datadir/legacy-device ] && [ ! -f $datadir/legacy ]; then touch $datadir/legacy; fi
         if [ -f $MODDIR/system.prop ]; then rm -f $MODDIR/system.prop; fi
@@ -262,7 +262,7 @@ elif [ "$1" == "mode" ]; then
     fi
 
 # Reset configs ------------------------------------------
-elif [ "$1" == "reset" ]; then
+elif [ "$1" = "reset" ]; then
     echo "Purging data folder"
     rm -Rf $datadir
     tsbinds update
