@@ -24,8 +24,8 @@ This saves space because the files **physically** reside on the external storage
 ## Changelog (2 recent versions)
 
 ### 1.1
-**Upgrade Notes**
-Please delete `/data/ts-binds`. It is now a residual leftover from 1.0.9. 1.1 now uses Magisk's own image to store configurations
+**Updgrade Notice**
+Please delete `/data/ts-binds` before updating.
 
 **Regressions**
 - Magisk version <17 is no longer supported due to template change
@@ -40,7 +40,6 @@ Please delete `/data/ts-binds`. It is now a residual leftover from 1.0.9. 1.1 no
 
 **Modifications**
 - Update minmagisk to version 17.0
-- Uses the module directory to store configurations instead of `/data/ts-binds`
 - Rename `disable.txt` to `disable`
 - No longer output to log file. Parent process needs to manually pipe to a file
   - `service.sh` calls `tsbinds bind all` piped to the logfile in internal storage
