@@ -10,9 +10,11 @@ For example, if you mirror the `Download` folder on Internal with the `Stuff fro
 
 This saves space because the files **physically** reside on the external storage instead of internal storage.
 
+## Requirements
+- Magisk version ≥17
+
 ## Notice
-- Not compatible when device has no SD Card slot (logic error in script file, the module expects an SD card on boot)
-- Not compatible when adoptable storage is used (logic error in script file, the module expects an SD card on boot)
+_none_
 
 ## Links
 - [**Further Reading**](https://www.technosparks.net/pages/product-documentation/ts-binds?from=readme)
