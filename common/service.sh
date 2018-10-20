@@ -10,16 +10,15 @@ log="tee -a $logfile"
 echo -e "Log initialised at: $(date) \n\n" > $logfile
 
 # Copy over user's bind list ---------------------------
-tsbinds update
+tsbinds update >> $logfile 2>> $logfile
 
 # Barrier, do not continue until SD card is mounted ----
-sleep 7
 until [ $sdstatus == "1" ]; do
     if sdname=$(grep -m 1 "/mnt/media_rw/" /proc/mounts | grep -m 1 -Eo "[0-9A-Z]{4}-[0-9A-Z]{4}"); then
         sdstatus=1
         echo "sdcard $sdname mounted" | $log
     else
-        sleep 1
+        sleep 3
     fi
 done
 
