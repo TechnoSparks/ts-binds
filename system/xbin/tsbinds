@@ -79,7 +79,6 @@ printhelp() {
     echo
 
     echo
-    echo "Note: running the command reinit, and unbind, move with \"all\" argument may return \"unmount\" errors. Most of the time they can be safely ignored."
 }
 
 # No action given ----------------------------------------
