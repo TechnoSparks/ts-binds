@@ -46,6 +46,8 @@ Please delete `/data/ts-binds` before updating.
 - No longer output to log file. Parent process needs to manually pipe to a file
   - `service.sh` calls `tsbinds bind all` piped to the logfile in internal storage
   - This means that the log only represent the automated process of bind mounting when the system boots.
+- `service.sh` will finish if SD Card not found in 60 seconds.
+  - Previously the script will infinite loop
 - Code refactor
 
 ### 1.0.9
