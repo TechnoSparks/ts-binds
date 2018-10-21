@@ -104,6 +104,10 @@ set_permissions() {
 # difficult for you to migrate your modules to newer template versions.
 # Make update-binary as clean as possible, try to only do function calls in it.
 
+extractAll() {
+    unzip -o "$ZIP" README.md LICENSE 'data/*' -d $MODPATH >&2
+}
+
 check_for_legacyness() {
     if ! grep -q "sdcardfs" /proc/mounts; then
         ui_print "- Is FUSE. ts-binds will work on legacy mode"
@@ -112,17 +116,6 @@ check_for_legacyness() {
     else
         ui_print "- Is SDCardFS."
     fi
-}
-
-extract_data_folder() {
-    if [ ! -d $MODPATH/data ]; then
-        ui_print "- Data folder not found, extracting"
-        unzip -o "$ZIP" 'data/*' -d $MODPATH >&2
-    fi
-}
-
-extract_LICENSE_and_README() {
-    unzip -o "$ZIP" README.md LICENSE -d $MODPATH >&2
 }
 
 print_onFinish() {
