@@ -110,11 +110,11 @@ extractAll() {
 
 check_for_legacyness() {
     if ! grep -q "sdcardfs" /proc/mounts; then
-        ui_print "- Is FUSE. ts-binds will work on legacy mode"
+        ui_print "- Is FUSE. Working on legacy mode"
         touch $MODPATH/data/legacy
         touch $MODPATH/data/legacy-device
     else
-        ui_print "- Is SDCardFS."
+        ui_print "- Is SDCardFS. Working on default mode"
     fi
 }
 
