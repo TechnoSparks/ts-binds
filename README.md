@@ -12,7 +12,7 @@ This saves space because the files **physically** reside on the external storage
 
 ## Requirements
 - Magisk Stable version ≥17
-  - Beta/Canary version not supported
+  - Beta and Canary version not supported
 
 ## Notice
 _none_
