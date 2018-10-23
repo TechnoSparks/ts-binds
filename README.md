@@ -28,6 +28,7 @@ _none_
 
 ### 1.1
 **Updgrade Notice**
+
 Please delete `/data/ts-binds` before updating.
 
 **Regressions**
