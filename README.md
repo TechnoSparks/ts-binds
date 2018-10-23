@@ -11,7 +11,8 @@ For example, if you mirror the `Download` folder on Internal with the `Stuff fro
 This saves space because the files **physically** reside on the external storage instead of internal storage.
 
 ## Requirements
-- Magisk version ≥17
+- Magisk Stable version ≥17
+  - Beta/Canary version not supported
 
 ## Notice
 _none_
