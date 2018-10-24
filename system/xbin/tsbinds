@@ -72,13 +72,14 @@ printhelp() {
     echo "                     mounting on boot"
     echo "enable ............. Enables automatic "
     echo "                     mounting on boot"
-    echo "mode <option> ...... Options:"
+    echo "mode ............... Output what mode is being"
+    echo "                     used"
+    echo "mode <arg> ......... Modes:"
     echo "                     'default' uses SDCardFS"
     echo "                     'legacy'  uses FUSE"
     echo "                     'device'  uses device default"
-    echo "reset .............. Resets ts-binds"
-    echo "                     configurations. folderlist"
-    echo "                     won't be affected."
+    echo "reset .............. Resets ts-binds."
+    echo "                     folderlist won't be affected."
 
     echo
 }
@@ -253,10 +254,7 @@ elif [ "$1" = "pairs" ]; then
 # Force change binding mode ------------------------------
 elif [ "$1" = "mode" ]; then
     if [ ! "$2" ]; then
-        echo "You need to decide if legacy on or legacy off!"
-        echo "tsbinds mode legacy      :: to force on (FUSE)"
-        echo "tsbinds mode default     :: to force off (SDCardFS)"
-        echo "tsbinds mode device      :: to fallback to device default"
+        $legacy && echo "FUSE" || echo "SDCardFS"
     elif [ "$2" = "default" ]; then
         echo "Forcing SDCardFS"
         if [ -f $datadir/legacy ]; then rm -f $datadir/legacy; fi
@@ -274,7 +272,7 @@ elif [ "$1" = "mode" ]; then
         if [ -f $datadir/legacy-device ] && [ ! -f $datadir/legacy ]; then touch $datadir/legacy; fi
         if [ -f $MODDIR/system.prop ]; then rm -f $MODDIR/system.prop; fi
     else
-        echo "Unknown parameter: ${2}!"
+        echo "Unknown parameter: $2!"
     fi
 
 # Reset configs ------------------------------------------
