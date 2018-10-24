@@ -284,6 +284,7 @@ elif [ "$1" = "reset" ]; then
 # Action unrecognised ------------------------------------
 else
     echo "E: Unknown action \"$1\" supplied"
+    echo 'Run "tsbinds h" or "tsbinds help" for help'
 fi
 
 # Handover default PATH ----------------------------------
