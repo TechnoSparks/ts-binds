@@ -84,21 +84,6 @@ printhelp() {
     echo
 }
 
-# Corrective measures ------------------------------------
-# this will soon be a fully fledged detection system
-#if [ ! $legacy ]; then
-#    emulated=$(grep -i "/data/media on /storage/emulated type sdcardfs" /proc/mounts)
-#    gid=$((echo "$emulated" | grep -Eo "\bgid=[0-9]+\b") | grep -Eo "[0-9]+")
-#    mask=$((echo "$emulated" | grep -Eo "\bmask=[0-9]+\b") | grep -Eo "[0-9]+")
-#    if [ $gid != 9997 ]; then
-#        if [ $mask != 7 ]; then
-#            supass mount -o remount,gid=9997,mask=7 /storage/emulated
-#        else
-#            supass mount -o remount,gid=9997 /storage/emulated
-#        fi
-#    fi
-#fi
-
 # No action given ----------------------------------------
 if [ ! "$1" ]; then
     echo "E: No action is declared!"
