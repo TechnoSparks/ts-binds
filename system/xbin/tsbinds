@@ -45,7 +45,7 @@ printhelp() {
     echo "Available options:"
     echo
     echo "help ............... Show this reference text"
-    echo "h .................. Ditto"
+    echo "h | --help | -h .... Ditto"
     echo "pairs .............. Prints out the folder"
     echo "                     pairs in folderlist"
     echo "bind <pair name> ... Binds a specific pair"
@@ -276,4 +276,6 @@ fi
 # in case somebody sourced this fakebin
 PATH=$oPATH
 set +o pipefail
+
+# Return true if script reaches here ---------------------
 exit 0
