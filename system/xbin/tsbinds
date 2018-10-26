@@ -36,7 +36,7 @@ if [ -f $datadir/legacy ]; then
 fi
 
 supass() {
-    /sbin/su -M -c "$@"
+    /sbin/su -M -c "$*"
 }
 
 printhelp() {
