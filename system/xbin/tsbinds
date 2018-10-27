@@ -110,7 +110,7 @@ elif [ "$1" = "bind" ]; then
         else
             echo "Binding $1"
             if supass mount --rbind \""$2"\" \""$3"\"; then
-                if [ ! $legacy ]; then
+                if ! $legacy; then
                     if { echo "$3" | grep -q "$int"; }; then
                         intr="$(echo "$3" | sed 's/\/mnt\/runtime\/default/\/mnt\/runtime\/read/g')"
                         intw="$(echo "$3" | sed 's/\/mnt\/runtime\/default/\/mnt\/runtime\/write/g')"
