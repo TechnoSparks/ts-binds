@@ -9,4 +9,4 @@
 #| These comments aren't enough info.
 #| Please read more: https://www.technosparks.net/pages/product-documentation/ts-binds?q=bind
 
-# folderbind whatsapp "$sd/Application Data/WhatsApp" $int/WhatsApp
+# folderbind whatsapp "$sd/Application Data/WhatsApp" "$int/WhatsApp"
