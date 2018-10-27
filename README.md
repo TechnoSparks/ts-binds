@@ -40,7 +40,7 @@ Please delete `/data/ts-binds` before updating.
   - SDCardFS seems to rely on `/mnt/runtime` mountpoints. The key is to set the bind paths from there, but the binded mount needs to be remounted with proper `gid=9997` and `mask=6`, thus making legacy `/storage/emulated/0` play nice with the permission of the binded folder
   - It is assumed that as of Oreo, SDCardFS implementation is already mature. Hopefully this algorithm persists for long!
 - New `$obb` variable to ease things in folderlist
-- OBB binding for SDCardFS
+- OBB binding is dealt with the new algorithm
 - Detection algorithm if legacy mode (for FUSE) should be applied on your device
   - Behaviour can be altered by using the new `mode` parameter for tsbinds. Run `tsbinds help` in terminal for more info
 - ts-binds is now licensed with ... Unlicensed! Read LICENSE file for info
