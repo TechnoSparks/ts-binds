@@ -111,8 +111,8 @@ elif [ "$1" = "bind" ]; then
                 if [ ! $legacy ] && { echo "$3" | grep -q "$int" }; then
                     intr="$(echo "$3" | sed 's/\/mnt\/runtime\/default/\/mnt\/runtime\/read/g')"
                     intw="$(echo "$3" | sed 's/\/mnt\/runtime\/default/\/mnt\/runtime\/write/g')"
-                    { supass mount -o remount,gid=9997,mask=6 \""$intr"\" } || exit 1
-                    { supass mount -o remount,gid=9997,mask=6 \""$intw"\" } || exit 1
+                    { supass mount -o remount,gid=9997,mask=6 \""$intr"\"; } || exit 1
+                    { supass mount -o remount,gid=9997,mask=6 \""$intw"\"; } || exit 1
                 fi
                 echo "Bind successful"
             else
