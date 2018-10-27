@@ -152,8 +152,8 @@ elif [ "$1" = "unbind" ]; then
             echo "$1 is already unbinded"
         else
             echo "Unbinding $1"
-            if ! supass umount \""$3"\"
-                else echo "Unbind failed: $1"; exit 1
+            if ! supass umount \""$3"\"; then
+                echo "Unbind failed: $1"; exit 1
             fi
         fi
     }
