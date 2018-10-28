@@ -13,7 +13,7 @@ This saves space because the files **physically** reside on the external storage
 ## Requirements
 - Magisk Stable version ≥17
   - Beta and Canary version not supported
-- Android version ≥ 4.4
+- Android version ≥ 5
 
 ## Notice
 _none_
