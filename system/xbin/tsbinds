@@ -107,9 +107,9 @@ elif [ "$1" = "bind" ]; then
         if supass mountpoint -q \""$3"\"; then
             echo "$1 is already binded"
         elif [ ! -d "$2" ] && [ ! -f "$2" ]; then
-            abort "Bind aborted: Folder '$2' as source doesn't exist!"
+            abort "Bind aborted: Path \"$2\" as source doesn't exist!"
         elif [ ! -d "$3" ] && [ ! -f "$3" ]; then
-            abort "Bind aborted: Folder '$3' as target doesn't exist!"
+            abort "Bind aborted: Path \"$3\" as target doesn't exist!"
         else
             echo "Binding $1"
             if supass mount --rbind \""$2"\" \""$3"\"; then
@@ -125,7 +125,7 @@ elif [ "$1" = "bind" ]; then
                     fi
                     if ! $remountOK; then
                         tsbinds unbind o "$3"
-                        abort "Bind remount failed and reverted action"
+                        abort "Bind remount failed and unbinded $1"
                     fi
                 fi
             else
@@ -134,7 +134,7 @@ elif [ "$1" = "bind" ]; then
         fi
     }
     if [ ! "$2" ]; then
-        echo 'E: Bind name is not provided!'
+        abort 'E: Bind name is not provided!'
     elif [ "$2" = "all" ]; then
         echo "Binding all entries"
         . $folderlist
@@ -144,7 +144,7 @@ elif [ "$1" = "bind" ]; then
     elif line="$(grep -m 1 "$2" $folderlist)"; then
         $line
     else
-        echo "Unable to bind $2, entry not found in list!"
+        abort "Unable to bind \"$2\", entry not found in list!"
     fi
 
 # Unbind -------------------------------------------------
@@ -160,7 +160,7 @@ elif [ "$1" = "unbind" ]; then
         fi
     }
     if [ ! "$2" ]; then
-        echo 'E: Bind name is not provided!'
+        abort 'E: Bind name is not provided!'
     elif [ "$2" = "all" ]; then
         echo "Unbinding all entries"
         . $folderlist
@@ -170,7 +170,7 @@ elif [ "$1" = "unbind" ]; then
     elif line="$(grep -m 1 "$2" $folderlist)"; then
         $line
     else
-        echo "Unable to unbind $2, entry not found in list!"
+        abort "Unable to unbind $2, entry not found in list!"
     fi
 
 # Check --------------------------------------------------
@@ -189,7 +189,7 @@ elif [ "$1" = "check" ]; then
     elif line="$(grep -m 1 "$2" $folderlist)"; then
         $line
     else
-        echo "Unable to check $2, entry not found in list!"
+        abort "Unable to check $2, entry not found in list!"
     fi
 
 # Update -------------------------------------------------
