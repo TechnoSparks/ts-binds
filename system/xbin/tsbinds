@@ -86,6 +86,11 @@ printhelp() {
     echo
 }
 
+abort() {
+    echo "$*"
+    exit 1
+}
+
 # No action given ----------------------------------------
 if [ ! "$1" ]; then
     echo "E: No action is declared!"
@@ -102,27 +107,29 @@ elif [ "$1" = "bind" ]; then
         if supass mountpoint -q \""$3"\"; then
             echo "$1 is already binded"
         elif [ ! -d "$2" ] && [ ! -f "$2" ]; then
-            echo "Bind aborted: Folder '$2' as source doesn't exist!"
-            exit 1
+            abort "Bind aborted: Folder '$2' as source doesn't exist!"
         elif [ ! -d "$3" ] && [ ! -f "$3" ]; then
-            echo "Bind aborted: Folder '$3' as target doesn't exist!"
-            exit 1
+            abort "Bind aborted: Folder '$3' as target doesn't exist!"
         else
             echo "Binding $1"
             if supass mount --rbind \""$2"\" \""$3"\"; then
                 if ! $legacy; then
                     runtimeread="$(echo "$3" | sed 's/\/mnt\/runtime\/default/\/mnt\/runtime\/read/g')"
                     runtimewrite="$(echo "$3" | sed 's/\/mnt\/runtime\/default/\/mnt\/runtime\/write/g')"
+                    remountOK=true
                     if echo "$3" | grep -Eq "${int}|${obb}"; then
-                        supass mount -o remount,gid=9997,mask=6 \""$runtimeread"\" || exit 1
-                        supass mount -o remount,gid=9997,mask=6 \""$runtimewrite"\" || exit 1
+                        $remountOK && { supass mount -o remount,gid=9997,mask=6 \""$runtimeread"\" || remountOK=false; }
+                        $remountOK && { supass mount -o remount,gid=9997,mask=6 \""$runtimewrite"\" || remountOK=false; }
                     elif echo "$3" | grep -q "$sd"; then
                         echo "In progress"
                     fi
+                    if ! $remountOK; then
+                        tsbinds unbind o "$3"
+                        abort "Bind remount failed and reverted action"
+                    fi
                 fi
             else
-                echo "Bind failed"
-                exit 1
+                abort "Bind failed"
             fi
         fi
     }
@@ -135,7 +142,7 @@ elif [ "$1" = "bind" ]; then
     elif [ "$2" = "o" ]; then
         folderbind "o" "$3" "$4"
     elif line="$(grep -m 1 "$2" $folderlist)"; then
-        eval "$line"
+        $line
     else
         echo "Unable to bind $2, entry not found in list!"
     fi
@@ -148,7 +155,7 @@ elif [ "$1" = "unbind" ]; then
         else
             echo "Unbinding $1"
             if ! supass umount \""$3"\"; then
-                echo "Unbind failed: $1"; exit 1
+                abort "Unbind failed"
             fi
         fi
     }
@@ -159,9 +166,9 @@ elif [ "$1" = "unbind" ]; then
         . $folderlist
         echo "All entries were processed"
     elif [ "$2" = "o" ]; then
-        folderbind "o" "$3" "$4"
+        folderbind "o" "$3" "$3"
     elif line="$(grep -m 1 "$2" $folderlist)"; then
-        eval "$line"
+        $line
     else
         echo "Unable to unbind $2, entry not found in list!"
     fi
@@ -180,7 +187,7 @@ elif [ "$1" = "check" ]; then
         . $folderlist
         echo "All entries were checked"
     elif line="$(grep -m 1 "$2" $folderlist)"; then
-        eval "$line"
+        $line
     else
         echo "Unable to check $2, entry not found in list!"
     fi
