@@ -113,13 +113,10 @@ elif [ "$1" = "bind" ]; then
                 if ! $legacy; then
                     runtimeread="$(echo "$3" | sed 's/\/mnt\/runtime\/default/\/mnt\/runtime\/read/g')"
                     runtimewrite="$(echo "$3" | sed 's/\/mnt\/runtime\/default/\/mnt\/runtime\/write/g')"
-                    if { echo "$3" | grep -q "$int"; }; then
+                    if echo "$3" | grep -Eq "{$int}|{$obb}"; then
                         supass mount -o remount,gid=9997,mask=6 \""$runtimeread"\" || exit 1
                         supass mount -o remount,gid=9997,mask=6 \""$runtimewrite"\" || exit 1
-                    elif { echo "$3" | grep -q "$obb"; }; then
-                        supass mount -o remount,gid=9997,mask=6 \""$runtimeread"\" || exit 1
-                        supass mount -o remount,gid=9997,mask=6 \""$runtimewrite"\" || exit 1
-                    elif { echo "$3" | grep -q "$sd"; }; then
+                    elif echo "$3" | grep -q "$sd"; then
                         echo "In progress"
                     fi
                 fi
