@@ -23,7 +23,8 @@ until [ $sdstatus == "1" ]; do
     else
         i=$(expr $i + 1)
         if [ $i -eq 20 ]; then
-            echo "20 retries (total of 60 seconds) but SD Card do not found. No changes are made."
+            echo "20 retries (total of 60 seconds) but SD Card do not found."
+            echo "Attempting to bind folderlist anyway"
             break;
         else
             sleep 3
