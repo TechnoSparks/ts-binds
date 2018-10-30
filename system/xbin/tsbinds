@@ -26,6 +26,7 @@ obb=/mnt/runtime/default/emulated/obb
 intraw=/data/media/0
 sdname=$(grep -m 1 "/mnt/media_rw/" /proc/mounts | grep -m 1 -Eo "[0-9A-Z]{4}-[0-9A-Z]{4}")
 sd=/mnt/runtime/default/$sdname
+sdraw=/mnt/media_rw/$sdname
 legacy=false
 folderlist=$datadir/cached-folderlist.sh
 folderlistuser=$intraw/ts-binds-folderlist.txt
@@ -34,7 +35,7 @@ if [ -f $datadir/legacy ]; then
     legacy=true
     int=$intraw
     obb=/data/media/obb
-    sd=/mnt/media_rw/$sdname
+    sd=$sdraw
 fi
 
 supass() {
