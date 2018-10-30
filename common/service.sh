@@ -5,7 +5,7 @@
 MODDIR=${0%/*}
 datadir=/data/ts-binds
 sdstatus=0
-logfile=$MODDIR/data/ts-binds.log
+logfile=$datadir/ts-binds.log
 logfileuser=/data/media/0/ts-binds.log
 exec > $logfile
 exec 2>&1
