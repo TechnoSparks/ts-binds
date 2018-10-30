@@ -338,10 +338,5 @@ else
     echo 'Run "tsbinds h" or "tsbinds help" for help'
 fi
 
-# Handover default PATH ----------------------------------
-# in case somebody sourced this fakebin
-PATH=$oPATH
-set +o pipefail
-
 # Return true if script reaches here ---------------------
 exit 0
