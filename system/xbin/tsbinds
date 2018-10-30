@@ -326,8 +326,8 @@ elif [ "$1" = "debug" ]; then
         if [ -d $dataraw/ts-binds-debug ]; then
             rm -rf $dataraw/ts-binds-debug
         fi
-        chown 1023:1023 $debugdir
-        chmod 0664 $debugdir
+        chown -R 1023:1023 $debugdir
+        chmod -R ug=rwX,o=rX $debugdir
         mv $debugdir $dataraw/
         echo "DONE. Please zip the folder ts-binds-debug in internal storage and upload as requested by the developer."
         echo "Reboot to disable ts-binds completely."
