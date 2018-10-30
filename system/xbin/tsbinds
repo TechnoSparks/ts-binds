@@ -277,6 +277,61 @@ elif [ "$1" = "reset" ]; then
     rm -Rf $datadir
     tsbinds update
 
+# Take debug ---------------------------------------------
+elif [ "$1" = "debug" ]; then
+    debugdir=/cache/ts-binds-debug
+    echo "Determining current debug position"
+    if [ ! -f /cache/tsdebug ]; then
+        echo "Starting fresh"
+        echo "Assuming currently ts-binds not working correctly"
+        if [ -d $debugdir ]; then
+            rm -rf $debugdir/*
+        else
+            mkdir -p $debugdir
+        fi
+        echo "Getting mounts"
+        supass cat /proc/mounts > $debugdir/ts-mounts-post.txt
+        echo "Getting props"
+        getprop > $debugdir/ts-props-post.txt
+        echo "Getting log"
+        cp $datadir/ts-binds.log $debugdir/ts-binds-post.log
+        echo "Getting folderlist"
+        cp $folderlist $debugdir/folderlist-post.txt
+        echo "Getting module prop"
+        cp $MODDIR/module.prop $debugdir/module.prop
+        echo "Setting hint that debug phase 1 completed"
+        touch /cache/tsdebug
+        echo "Disabling ts-binds auto mount"
+        tsbinds disable
+        echo
+        echo "NOTE: PLEASE REBOOT DEVICE AND RUN tsbinds debug AGAIN!"
+    else
+        echo "Starting second phase"
+        echo "Getting mounts"
+        supass cat /proc/mounts > $debugdir/ts-mounts-pre.txt
+        echo "Getting props"
+        getprop > $debugdir/ts-props-pre.txt
+        echo "Getting log"
+        cp $datadir/ts-binds.log $debugdir/ts-binds-pre.log
+        echo "Getting folderlist"
+        cp $folderlist $debugdir/folderlist-pre.txt
+        echo "Deleting hint"
+        rm -f /cache/tsdebug
+        echo "Enabling automount"
+        tsbinds enable
+        echo "Disabling module altogether on next reboot"
+        touch $MODDIR/disable
+        echo "Moving debug folder to internal storage"
+        if [ -d $dataraw/ts-binds-debug ]; then
+            rm -rf $dataraw/ts-binds-debug
+        fi
+        chown 1023:1023 $debugdir
+        chmod 0664 $debugdir
+        mv $debugdir $dataraw/
+        echo "DONE. Please zip the folder ts-binds-debug in internal storage and upload as requested by the developer."
+        echo "Reboot to disable ts-binds completely."
+    fi
+
 # Action unrecognised ------------------------------------
 else
     echo "E: Unknown action \"$1\" supplied"
