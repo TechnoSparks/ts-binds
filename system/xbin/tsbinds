@@ -298,6 +298,20 @@ elif [ "$1" = "debug" ]; then
         cp $datadir/ts-binds.log $debugdir/ts-binds-post.log
         echo "Getting folderlist"
         cp $folderlist $debugdir/folderlist-post.txt
+        echo "Getting working mode"
+        if $legacy; then
+            if [ -f $datadir/legacy-device ]; then
+                echo -e "Device: Legacy\nMode: legacy" > $debugdir/working-mode.txt
+            else
+                echo -e "Device: Modern\nMode: legacy" > $debugdir/working-mode.txt
+            fi
+        else
+            if [ -f $datadir/legacy-device ]; then
+                echo -e "Device: Legacy\nMode: default" > $debugdir/working-mode.txt
+            else
+                echo -e "Device: Modern\nMode: default" > $debugdir/working-mode.txt
+            fi
+        fi
         echo "Getting module prop"
         cp $MODDIR/module.prop $debugdir/module.prop
         echo "Setting hint that debug phase 1 completed"
