@@ -115,14 +115,23 @@ elif [ "$1" = "bind" ]; then
             echo "Binding $1"
             if supass mount --rbind \""$2"\" \""$3"\"; then
                 if ! $legacy; then
-                    runtimeread="$(echo "$3" | sed 's/\/mnt\/runtime\/default/\/mnt\/runtime\/read/g')"
-                    runtimewrite="$(echo "$3" | sed 's/\/mnt\/runtime\/default/\/mnt\/runtime\/write/g')"
+                    runtimesed='sed "s/\/mnt\/runtime\/default/\/mnt\/runtime\/read/g"'
+                    intRuntimeRead="$(echo "$3" | $runtimesed)"
+                    intRuntimeWrite="$(echo "$3" | $runtimesed)"
+                    sdRuntimeRead=="$(echo "$2" | $runtimesed)"
+                    sdRuntimeWrite="$(echo "$2" | $runtimesed)"
                     remountOK=true
                     if echo "$3" | grep -Eq "${int}|${obb}"; then
-                        $remountOK && { supass mount -o remount,gid=9997,mask=6 \""$runtimeread"\" || remountOK=false; }
-                        $remountOK && { supass mount -o remount,gid=9997,mask=6 \""$runtimewrite"\" || remountOK=false; }
+                        if ! supass mountpoint \"$intRuntimeRead\";
+                            supass mount --rbind \"$sdRuntimeRead\" \"$intRuntimeRead\"
+                        fi
+                        if ! supass mountpoint \"$sdRuntimeWrite\";
+                            supass mount --rbind \"$sdRuntimeWrite\" \"$sdRuntimeWrite\"
+                        fi
+                        $remountOK && { supass mount -o remount,gid=9997,mask=6 \""$intRuntimeRead"\" || remountOK=false; }
+                        $remountOK && { supass mount -o remount,gid=9997,mask=6 \""$intRuntimeWrite"\" || remountOK=false; }
                     elif echo "$3" | grep -q "$sd"; then
-                        echo "In progress"
+                        abort "Feature in progress! Cannot bind int -> SD at the moment"
                     fi
                     if ! $remountOK; then
                         tsbinds unbind o "$3"
