@@ -52,7 +52,7 @@ Please delete `/data/ts-binds` before updating.
   - `service.sh` output is redirected to the original log file
   - This means that the log only represent the automated process of bind mounting when the system boots.
 - `service.sh` will finish if SD Card not found in 60 seconds.
-  - Previously the script will infinite loop
+  - Previously the script will infinitely loop
 - Code refactor
 
 ### 1.0.9
