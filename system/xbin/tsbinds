@@ -123,10 +123,10 @@ elif [ "$1" = "bind" ]; then
                     remountOK=true
                     if echo "$3" | grep -Eq "${int}|${obb}"; then
                         if ! supass mountpoint \"$intRuntimeRead\";
-                            supass mount --rbind \"$sdRuntimeRead\" \"$intRuntimeRead\"
+                            supass mount --rbind \"$sdRuntimeRead\" \"$intRuntimeRead\" || abort "Read runtime binding failed"
                         fi
                         if ! supass mountpoint \"$intRuntimeWrite\";
-                            supass mount --rbind \"$sdRuntimeWrite\" \"$intRuntimeWrite\"
+                            supass mount --rbind \"$sdRuntimeWrite\" \"$intRuntimeWrite\" || abort "Write runtime binding failed"
                         fi
                         $remountOK && { supass mount -o remount,gid=9997,mask=6 \"$intRuntcimeRead\" || remountOK=false; }
                         $remountOK && { supass mount -o remount,gid=9997,mask=6 \"$intRuntimeWrite\" || remountOK=false; }
