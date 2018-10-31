@@ -125,10 +125,10 @@ elif [ "$1" = "bind" ]; then
                         if ! supass mountpoint \"$intRuntimeRead\";
                             supass mount --rbind \"$sdRuntimeRead\" \"$intRuntimeRead\"
                         fi
-                        if ! supass mountpoint \"$sdRuntimeWrite\";
-                            supass mount --rbind \"$sdRuntimeWrite\" \"$sdRuntimeWrite\"
+                        if ! supass mountpoint \"$intRuntimeWrite\";
+                            supass mount --rbind \"$sdRuntimeWrite\" \"$intRuntimeWrite\"
                         fi
-                        $remountOK && { supass mount -o remount,gid=9997,mask=6 \"$intRuntimeRead\" || remountOK=false; }
+                        $remountOK && { supass mount -o remount,gid=9997,mask=6 \"$intRuntcimeRead\" || remountOK=false; }
                         $remountOK && { supass mount -o remount,gid=9997,mask=6 \"$intRuntimeWrite\" || remountOK=false; }
                     elif echo "$3" | grep -q "$sd"; then
                         abort "Feature in progress! Cannot bind int -> SD at the moment"
