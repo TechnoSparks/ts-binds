@@ -99,7 +99,6 @@ concatenateArgs() {
 }
 
 # Pseudo Functions ---------------------------------------
-
 mount() {
     supass mount $(concatenateArgs "$@")
 }
@@ -125,7 +124,7 @@ elif [ "$1" = "help" ] || [ "$1" = "h" ] || [ "$1" = "--help" ] || [ "$1" = "-h"
 # Bind ---------------------------------------------------
 elif [ "$1" = "bind" ]; then
     folderbind() {
-        if supass mountpoint -q \"$3\"; then
+        if mountpoint -q \"$3\"; then
             echo "$1 is already binded"
         elif [ ! -d "$2" ] && [ ! -f "$2" ]; then
             abort "Bind aborted: Path \"$2\" as source doesn't exist!"
@@ -133,7 +132,7 @@ elif [ "$1" = "bind" ]; then
             abort "Bind aborted: Path \"$3\" as target doesn't exist!"
         else
             echo "Binding $1"
-            if supass mount --rbind \"$2\" \"$3\"; then
+            if mount --rbind \"$2\" \"$3\"; then
                 if ! $legacy; then
                     runtimesed='sed "s/\/mnt\/runtime\/default/\/mnt\/runtime\/read/g"'
                     intRuntimeRead="$(echo "$3" | $runtimesed)"
@@ -142,14 +141,14 @@ elif [ "$1" = "bind" ]; then
                     sdRuntimeWrite="$(echo "$2" | $runtimesed)"
                     remountOK=true
                     if echo "$3" | grep -Eq "${int}|${obb}"; then
-                        if ! supass mountpoint \"$intRuntimeRead\";
-                            supass mount --rbind \"$sdRuntimeRead\" \"$intRuntimeRead\" || abort "Read runtime binding failed"
+                        if ! mountpoint \"$intRuntimeRead\";
+                            mount --rbind \"$sdRuntimeRead\" \"$intRuntimeRead\" || abort "Read runtime binding failed"
                         fi
-                        if ! supass mountpoint \"$intRuntimeWrite\";
-                            supass mount --rbind \"$sdRuntimeWrite\" \"$intRuntimeWrite\" || abort "Write runtime binding failed"
+                        if ! mountpoint \"$intRuntimeWrite\";
+                            mount --rbind \"$sdRuntimeWrite\" \"$intRuntimeWrite\" || abort "Write runtime binding failed"
                         fi
-                        $remountOK && { supass mount -o remount,gid=9997,mask=6 \"$intRuntimeRead\" || remountOK=false; }
-                        $remountOK && { supass mount -o remount,gid=9997,mask=6 \"$intRuntimeWrite\" || remountOK=false; }
+                        $remountOK && { mount -o remount,gid=9997,mask=6 \"$intRuntimeRead\" || remountOK=false; }
+                        $remountOK && { mount -o remount,gid=9997,mask=6 \"$intRuntimeWrite\" || remountOK=false; }
                     elif echo "$3" | grep -q "$sd"; then
                         abort "Feature in progress! Cannot bind int -> SD at the moment"
                     fi
@@ -180,11 +179,11 @@ elif [ "$1" = "bind" ]; then
 # Unbind -------------------------------------------------
 elif [ "$1" = "unbind" ]; then
     folderbind() {
-        if ! supass mountpoint -q \"$3\"; then
+        if ! mountpoint -q \"$3\"; then
             echo "$1 is already unbinded"
         else
             echo "Unbinding $1"
-            if ! supass umount \"$3\"; then
+            if ! umount \"$3\"; then
                 abort "Unbind failed"
             fi
         fi
@@ -206,7 +205,7 @@ elif [ "$1" = "unbind" ]; then
 # Check --------------------------------------------------
 elif [ "$1" = "check" ]; then
     folderbind() {
-        if supass mountpoint -q \"$3\"
+        if mountpoint -q \"$3\"
             then echo "$1 is BINDED"
             else echo "$1 is NOT binded"
         fi
