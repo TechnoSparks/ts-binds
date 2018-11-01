@@ -18,7 +18,7 @@ if ! ls /data > /dev/null 2> /dev/null; then
     exit 1
 fi
 
-# Functions ----------------------------------------------
+# Functions & Vars ---------------------------------------
 MODDIR=/sbin/.core/img/ts-binds
 datadir=/data/ts-binds
 int=/mnt/runtime/default/emulated/0
@@ -37,10 +37,6 @@ if [ -f $datadir/legacy ]; then
     obb=/data/media/obb
     sd=$sdraw
 fi
-
-supass() {
-    /sbin/su -M -c "$*"
-}
 
 printhelp() {
     echo "tsbinds [options] [arg]"
@@ -90,6 +86,30 @@ printhelp() {
 abort() {
     echo "$*"
     exit 1
+}
+
+supass() {
+    /sbin/su -M -c "$*"
+}
+
+concatenateArgs() {
+    str=''
+    for i; do str="$str ${i@Q}"; done;
+    echo $str
+}
+
+# Pseudo Functions ---------------------------------------
+
+mount() {
+    supass mount $(concatenateArgs "$@")
+}
+
+mountpoint() {
+    supass mountpoint $(concatenateArgs "$@")
+}
+
+umount() {
+    supass umount $(concatenateArgs "$@")
 }
 
 # No action given ----------------------------------------
