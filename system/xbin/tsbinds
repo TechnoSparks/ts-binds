@@ -140,7 +140,6 @@ elif [ "$1" = "bind" ]; then
                     intRuntimeWrite="$(echo "$3" | $runtimesedw)"
                     sdRuntimeRead=="$(echo "$2" | $runtimesedr)"
                     sdRuntimeWrite="$(echo "$2" | $runtimesedw)"
-                    remountOK=true
                     if echo "$3" | grep -Eq "${int}|${obb}"; then
                         if ! mountpoint "$intRuntimeRead";
                             mount --rbind "$sdRuntimeRead" "$intRuntimeRead" || { umount "$3"; abort "Read runtime binding failed"; }
@@ -148,14 +147,10 @@ elif [ "$1" = "bind" ]; then
                         if ! mountpoint "$intRuntimeWrite";
                             mount --rbind "$sdRuntimeWrite" "$intRuntimeWrite" || { umount "$3"; abort "Write runtime binding failed"; }
                         fi
-                        $remountOK && { mount -o remount,gid=9997,mask=6 "$intRuntimeRead" || remountOK=false; }
-                        $remountOK && { mount -o remount,gid=9997,mask=6 "$intRuntimeWrite" || remountOK=false; }
+                        mount -o remount,gid=9997,mask=6 "$intRuntimeRead" || { umount "$3"; abort "Bind remount failed"; }
+                        mount -o remount,gid=9997,mask=6 "$intRuntimeWrite" || { umount "$3"; abort "Bind remount failed"; }
                     elif echo "$3" | grep -q "$sd"; then
                         abort "Feature in progress! Cannot bind int -> SD at the moment"
-                    fi
-                    if ! $remountOK; then
-                        umount "$3"
-                        abort "Bind remount failed and unbinded $1"
                     fi
                 fi
             else
