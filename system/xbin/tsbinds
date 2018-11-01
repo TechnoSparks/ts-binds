@@ -134,11 +134,12 @@ elif [ "$1" = "bind" ]; then
             echo "Binding $1"
             if mount --rbind "$2" "$3"; then
                 if ! $legacy; then
-                    runtimesed='sed "s/\/mnt\/runtime\/default/\/mnt\/runtime\/read/g"'
-                    intRuntimeRead="$(echo "$3" | $runtimesed)"
-                    intRuntimeWrite="$(echo "$3" | $runtimesed)"
-                    sdRuntimeRead=="$(echo "$2" | $runtimesed)"
-                    sdRuntimeWrite="$(echo "$2" | $runtimesed)"
+                    runtimesedr='sed "s/\/mnt\/runtime\/default/\/mnt\/runtime\/read/g"'
+                    runtimesedw='sed "s/\/mnt\/runtime\/default/\/mnt\/runtime\/write/g"'
+                    intRuntimeRead="$(echo "$3" | $runtimesedr)"
+                    intRuntimeWrite="$(echo "$3" | $runtimesedw)"
+                    sdRuntimeRead=="$(echo "$2" | $runtimesedr)"
+                    sdRuntimeWrite="$(echo "$2" | $runtimesedw)"
                     remountOK=true
                     if echo "$3" | grep -Eq "${int}|${obb}"; then
                         if ! mountpoint "$intRuntimeRead";
