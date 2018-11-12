@@ -53,6 +53,7 @@ Please delete `/data/ts-binds` before updating.
 - New binding algorithm to support sdcardfs!
   - SDCardFS seems to rely on `/mnt/runtime` mountpoints. The key is to set the bind paths from there, but the binded mount needs to be remounted with proper `gid=9997` and `mask=6`, thus making legacy `/storage/emulated/0` play nice with the permission of the binded folder
   - It is assumed that as of Oreo, SDCardFS implementation is already mature. Hopefully this algorithm persists for long!
+  - Binding algorithm will also mount other runtimes if Android do not do it automatically
 - New `$obb` variable to ease things in folderlist
 - OBB binding is dealt with the new algorithm
 - If runtime paths are not automatically mounted by Android, ts-binds mount them instead
