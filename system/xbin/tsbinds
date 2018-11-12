@@ -141,10 +141,10 @@ elif [ "$1" = "bind" ]; then
                     sdRuntimeRead="$(echo "$2" | $runtimesedr)"
                     sdRuntimeWrite="$(echo "$2" | $runtimesedw)"
                     if echo "$3" | grep -Eq "${int}|${obb}"; then
-                        if ! mountpoint "$intRuntimeRead";
+                        if ! mountpoint "$intRuntimeRead"; then
                             mount --rbind "$sdRuntimeRead" "$intRuntimeRead" || { umount "$3"; abort "Read runtime binding failed"; }
                         fi
-                        if ! mountpoint "$intRuntimeWrite";
+                        if ! mountpoint "$intRuntimeWrite"; then
                             mount --rbind "$sdRuntimeWrite" "$intRuntimeWrite" || { umount "$3"; abort "Write runtime binding failed"; }
                         fi
                         mount -o remount,gid=9997,mask=6 "$intRuntimeRead" || { umount "$3"; abort "Bind remount failed"; }
