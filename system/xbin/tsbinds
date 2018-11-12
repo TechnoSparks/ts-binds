@@ -3,8 +3,7 @@
 
 # All hail busybox for standardising this script!
 busybox=/sbin/.core/busybox
-oPATH=$PATH
-PATH=$busybox:$oPATH
+PATH=$busybox:$PATH
 set -o pipefail
 
 # Check if run under root --------------------------------
