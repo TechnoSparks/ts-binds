@@ -274,7 +274,10 @@ elif [ "$1" = "pairs" ]; then
 # Force change binding mode ------------------------------
 elif [ "$1" = "mode" ]; then
     if [ ! "$2" ]; then
+        echo "Current mode:"
         $legacy && echo "FUSE" || echo "SDCardFS"
+        echo "Device default:"
+        [ -f $datadir/legacy-device ] && echo "FUSE" || echo "SDCardFS"
     elif [ "$2" = "default" ]; then
         echo "Forcing SDCardFS"
         if [ -f $datadir/legacy ]; then rm -f $datadir/legacy; fi
