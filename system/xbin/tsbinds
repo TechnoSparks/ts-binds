@@ -138,7 +138,7 @@ elif [ "$1" = "bind" ]; then
                     runtimesedw='sed "s/\/mnt\/runtime\/default/\/mnt\/runtime\/write/g"'
                     intRuntimeRead="$(echo "$3" | $runtimesedr)"
                     intRuntimeWrite="$(echo "$3" | $runtimesedw)"
-                    sdRuntimeRead=="$(echo "$2" | $runtimesedr)"
+                    sdRuntimeRead="$(echo "$2" | $runtimesedr)"
                     sdRuntimeWrite="$(echo "$2" | $runtimesedw)"
                     if echo "$3" | grep -Eq "${int}|${obb}"; then
                         if ! mountpoint "$intRuntimeRead";
