@@ -56,7 +56,6 @@ Please delete `/data/ts-binds` before updating.
   - Binding algorithm will also mount other runtimes if Android do not do it automatically
 - New `$obb` variable to ease things in folderlist
   - OBB binding is dealt with the new algorithm
-- If runtime paths are not automatically mounted by Android, ts-binds mount them instead
 - Detection algorithm if legacy mode (for FUSE) should be applied on your device
   - Behaviour can be altered by using the new `mode` parameter for tsbinds. Run `tsbinds help` in terminal for more info
 - ts-binds is now licensed with ... Unlicensed! Read LICENSE file for info
