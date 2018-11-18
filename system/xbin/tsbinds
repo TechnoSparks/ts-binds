@@ -99,15 +99,15 @@ concatenateArgs() {
 
 # Pseudo Functions ---------------------------------------
 mount() {
-    supass mount $(concatenateArgs "$@")
+    supass mount $(concatenateArgs "$@") > /dev/null
 }
 
 mountpoint() {
-    supass mountpoint $(concatenateArgs "$@")
+    supass mountpoint $(concatenateArgs "$@") > /dev/null
 }
 
 umount() {
-    supass umount $(concatenateArgs "$@")
+    supass umount $(concatenateArgs "$@") > /dev/null
 }
 
 # No action given ----------------------------------------
