@@ -133,12 +133,10 @@ elif [ "$1" = "bind" ]; then
             echo "Binding $1"
             if mount --rbind "$2" "$3"; then
                 if ! $legacy; then
-                    runtimesedr='sed "s/\/mnt\/runtime\/default/\/mnt\/runtime\/read/g"'
-                    runtimesedw='sed "s/\/mnt\/runtime\/default/\/mnt\/runtime\/write/g"'
-                    intRuntimeRead="$(echo "$3" | $runtimesedr)"
-                    intRuntimeWrite="$(echo "$3" | $runtimesedw)"
-                    sdRuntimeRead="$(echo "$2" | $runtimesedr)"
-                    sdRuntimeWrite="$(echo "$2" | $runtimesedw)"
+                    intRuntimeRead=${3/\/mnt\/runtime\/default/\/mnt\/runtime\/read}
+                    intRuntimeWrite=${3/\/mnt\/runtime\/default/\/mnt\/runtime\/write}
+                    sdRuntimeRead=${2/\/mnt\/runtime\/default/\/mnt\/runtime\/read}
+                    sdRuntimeWrite=${2/\/mnt\/runtime\/default/\/mnt\/runtime\/write}
                     if echo "$3" | grep -Eq "${int}|${obb}"; then
                         if ! mountpoint "$intRuntimeRead"; then
                             mount --rbind "$sdRuntimeRead" "$intRuntimeRead" || { umount "$3"; abort "Read runtime binding failed"; }
