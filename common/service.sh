@@ -7,8 +7,7 @@ datadir=/data/ts-binds
 sdstatus=0
 logfile=$datadir/ts-binds.log
 logfileuser=/data/media/0/ts-binds.log
-exec > $logfile
-exec 2>&1
+exec > $logfile 2>&1
 echo -e "Log initialised at: $(date) \n\n"
 
 # Copy over user's bind list ---------------------------
