@@ -16,7 +16,7 @@ tsbinds update
 
 # Barrier, do not continue until SD card is mounted ----
 i=0
-until [ $sdstatus == "1" ]; do
+until [ $sdstatus = "1" ]; do
     if sdname=$(grep -m 1 "/mnt/media_rw/" /proc/mounts | grep -m 1 -Eo "[0-9A-Z]{4}-[0-9A-Z]{4}"); then
         sdstatus=1
         echo "sdcard $sdname mounted"
