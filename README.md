@@ -4,7 +4,7 @@ ts-binds binds two different folders on your device so that both folders share t
 
 ## Update Notice
 
-Please delete `/data/ts-binds` before updating.
+Please delete `/data/ts-binds`, uninstall module and reboot before updating.
 
 This is a huge update as a lot of the core code has been changed drastically. Please have a look at the changelog below for more information.
 
@@ -43,7 +43,7 @@ _none_
 
 **Updgrade Notice**
 
-Please delete `/data/ts-binds` before updating.
+Please delete `/data/ts-binds`, uninstall module and reboot before updating.
 
 **Regressions**
 
