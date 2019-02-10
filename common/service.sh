@@ -2,7 +2,7 @@
 # abel
 
 # Functions --------------------------------------------
-MODDIR=${0%/*}
+MODDIR=/sbin/.magisk/img/ts-binds
 datadir=/data/ts-binds
 sdstatus=false
 logfile=$datadir/ts-binds.log
