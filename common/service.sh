@@ -1,12 +1,20 @@
 #!/system/bin/sh
-# sy
+# abel
 
-# Functions ----------------------------------------------
+# Functions --------------------------------------------
 MODDIR=${0%/*}
 datadir=/data/ts-binds
 sdstatus=false
 logfile=$datadir/ts-binds.log
 logfileuser=/data/media/0/ts-binds.log
+
+# Data dir must exist ----------------------------------
+if [ ! -d $datadir ]; then
+    cp -R $MODDIR/data $datadir
+    echo "Copied data folder to /data"
+fi
+
+# Pipe output to log file ------------------------------
 exec > $logfile 2>&1
 echo -e "Log initialised at: $(date) \n\n"
 

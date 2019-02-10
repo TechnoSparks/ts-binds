@@ -1,5 +1,5 @@
 #!/system/bin/sh
-# sy
+# abel
 
 # All hail busybox for standardising this script!
 busybox=/sbin/.magisk/busybox
@@ -216,11 +216,7 @@ elif [ "$1" = "check" ]; then
 
 # Update -------------------------------------------------
 elif [ "$1" = "update" ]; then
-    if [ ! -d $datadir ]; then
-        cp -R $MODDIR/data $datadir
-        echo "Copied data folder to /data"
-        tsbinds update
-    elif [ ! -f $folderlistuser ]; then
+    if [ ! -f $folderlistuser ]; then
         cp $datadir/fresh-folderlist.txt $folderlistuser
         echo "Copied user list to internal storage"
         chown 1023:1023 $folderlistuser
