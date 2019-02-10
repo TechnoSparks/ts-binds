@@ -122,8 +122,8 @@ $PROPFILE && cp -af $INSTALLER/common/system.prop $MODPATH/system.prop
 cp -af $INSTALLER/module.prop $MODPATH/module.prop
 if $BOOTMODE; then
   # Update info for Magisk Manager
-  mktouch /sbin/.core/img/$MODID/update
-  cp -af $INSTALLER/module.prop /sbin/.core/img/$MODID/module.prop
+  mktouch /sbin/.magisk/img/$MODID/update
+  cp -af $INSTALLER/module.prop /sbin/.magisk/img/$MODID/module.prop
 fi
 
 # post-fs-data mode scripts

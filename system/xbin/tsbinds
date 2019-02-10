@@ -2,7 +2,7 @@
 # sy
 
 # All hail busybox for standardising this script!
-busybox=/sbin/.core/busybox
+busybox=/sbin/.magisk/busybox
 PATH=$busybox:$PATH
 set -o pipefail
 
@@ -18,7 +18,7 @@ if ! ls /data > /dev/null 2> /dev/null; then
 fi
 
 # Functions & Vars ---------------------------------------
-MODDIR=/sbin/.core/img/ts-binds
+MODDIR=/sbin/.magisk/img/ts-binds
 datadir=/data/ts-binds
 int=/mnt/runtime/default/emulated/0
 obb=/mnt/runtime/default/emulated/obb
