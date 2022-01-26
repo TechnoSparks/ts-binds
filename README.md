@@ -2,6 +2,10 @@
 
 ts-binds binds two different folders on your device so that both folders share the same contents
 
+## Project Abandoned
+
+I am stopping development because I no longer use a device with an SD card slot. While the project may be revived in the future should my new device has an SD Card slot, consider using a much more worthy alternative [fbind](https://github.com/VR-25/fbind)
+
 ## Update Notice
 
 Please delete `/data/ts-binds`, uninstall module and reboot before updating.
